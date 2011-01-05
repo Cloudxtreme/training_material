@@ -1,0 +1,80 @@
+* Riak, Webmacine, Mochiweb and Erlang OTP Conformance
+  This topic is being covered by Andy Gross.
+
+* Interfaces and Data Formats
+** Interfaces
+   Riak provides three interface options:
+     - native Erlang
+     - Protocol
+     - HTTP
+     
+   HTTP is the slowest of the options while the Protocol Buffers and
+   native Erlang interfaces perform equally well.
+
+   For applications built using Erlang I recommend using the Protocol
+   Buffers Client so the application can be packaged and deployed
+   independent of Riak.
+
+*** Note About Buckets and Keys
+   The HTTP interface can only access/create objects with buckets and
+   keys that can be represented as URLs (typically US-ASCII characters).
+
+   This limitation does not exist in the other interfaces which can
+   lead to scenarios where objects are created via the Protocol
+   Buffers interface but not accessible via the HTTP interface.
+
+   It is recommended to limit buckets and keys to US-ASCII strings to
+   ensure objects can be accessed via the HTTP interface. For example,
+   when using the Riak Erlang client choose buckets and keys of the
+   form:
+     <<"bucket">>, <<"key">>
+   
+** Serialization (JSON, Erlang terms, etc.)
+   It's possible to store data in any format including raw Erlang
+   terms. The disadvantage of using Erlang terms is that the objects
+   can only be accessed and modified by the Erlang client.
+
+   JSON is the most commonly chosen serialization format. Objects
+   serialized in JSON can be accessed and modified from any
+   language. Using JSON adds a bit of overhead per operation since the
+   object has to be encoded/decoded.
+
+   Working with JSON is very easy in Erlang with the Mochijson2
+   module.
+
+* Load balancing and replication strategies for LAN and WAN environments
+** LAN
+   HAProxy is a common choice and does work with the Protocol Buffers
+   Interface. Some individuals have used Nginx but that only works
+   with HTTP.
+
+   I recommend HAProxy.
+
+** WAN
+   The Enterprise version of Riak provides Mutli-Data Center
+   Replication. This allows you to have two clusters in separate data
+   centers with the same data. Replication can be configured for
+   one-way or two-way replication.
+
+*** One Way Replication
+    Changes can be replicated to read only Riak clusters at the edge
+    of the network (locations close to the user).
+
+*** Two Way Replication
+    Multi master clusters can be setup in different data centers,
+    typically in different geographic locations. For example, east and
+    west coast clusters to provide low latency service to users.
+
+* Writing efficient Map/Reduce functions
+  Performance sensitive applications should avoid full bucket map
+  reduce queries. These are queries that use just a bucket as the
+  input.
+
+  Targeted map reduce queries are recommended. These are queries that
+  start at a set group of bucket/key pairs.
+ 
+* Access control and org management in Riak (users, groups, etc.)
+  Riak does not provide any access control or authorization features.
+* Demo
+  Review [Sample Riak Erlang Client
+  Application](https://github.com/dreverri/sample_riak_erlang_client_app)
