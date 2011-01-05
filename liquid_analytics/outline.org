@@ -76,5 +76,4 @@
 * Access control and org management in Riak (users, groups, etc.)
   Riak does not provide any access control or authorization features.
 * Demo
-  Review [Sample Riak Erlang Client
-  Application](https://github.com/dreverri/sample_riak_erlang_client_app)
+  Review [[https://github.com/dreverri/sample_riak_erlang_client_app][Sample Riak Erlang Client Application]]
