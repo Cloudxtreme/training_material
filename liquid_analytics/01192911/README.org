@@ -1,0 +1,90 @@
+* Session 1
+
+** Webmachine
+*** Know your status codes
+    http://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+
+*** Know your resource
+    https://webmachine.basho.com/resources.html
+
+*** Forget about the UI, focus on resources
+    Webmachine is all about REST
+    REST is all about resources
+
+    Webmachine makes full use of headers and status codes; don't fight
+    it
+
+    A REST API will not fit with the old school POST multipart form
+    data for everything approach
+
+    Define a set of resources that use PUT, POST, GET, DELETE
+
+    POST -> store content at a server generated id
+    PUT -> store content at a client specified id
+
+    POST is often accepted in place of a PUT which is OK
+
+*** Resources
+
+    assessments/[id] # questionnaires/checklists
+
+    profile # user profile
+
+    responses/[id] # previously completed responses
+
+    pelocity # calculated pelocity
+
+    jobs/[id] # job descriptions
+    jobs/[id]/content/[id] # possible resource structure for job content
+
+*** User authentication
+
+    There are no built in authentication libraries.
+
+    You have to roll your own; is_authorized/2 callback
+
+    Basic Authentication over HTTPS is very easy
+
+*** Websockets
+
+    There is no support available for Websockets
+
+    You will have to roll your own
+
+*** Jquery
+    1.4 passes xhr object to success callbacks (xhr.status())
+    $.ajax({success: function(data, statusText, xhr) { ... }})
+    statusText is essentially useless
+
+** Riak
+
+   Avoid listing keys (including key filters) when possible
+
+   Assessments/Checklists are known ahead of time; create a single
+   document with a list of available assessments/checklists
+
+   Same for job center
+
+   Same for responses (user response per checklist is knowable without
+   any listing)
+
+*** Job Fit/Readiness Functions
+
+    What information is required to calculate these values?
+    All previous responses from a user? Or is it incremental based on
+    current pelocity?
+    Why does each job have 28 child documents? Can this be
+    de-normalized?
+
+*** Log
+
+    You included a log bucket in your documentation
+    What will you be using the log data for?
+    Very difficult to access log data in a meaningful way from Riak.
+    Riak is not a good choice for log data analysis
+
+*** Feed, Insights, WF
+
+    What are these buckets doing?
+    What questions will you be answering with this data?
+    How do you need to access this data?
