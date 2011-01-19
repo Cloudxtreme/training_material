@@ -1,11 +1,12 @@
 * Riak, Webmacine, Mochiweb and Erlang OTP Conformance
   This topic is being covered by Andy Gross.
 
+
 * Interfaces and Data Formats
 ** Interfaces
    Riak provides three interface options:
-     - native Erlang
-     - Protocol
+     - Native Erlang
+     - Protocol Buffers
      - HTTP
      
    HTTP is the slowest of the options while the Protocol Buffers and
@@ -42,6 +43,7 @@
    Working with JSON is very easy in Erlang with the Mochijson2
    module.
 
+
 * Load balancing and replication strategies for LAN and WAN environments
 ** LAN
    HAProxy is a common choice and does work with the Protocol Buffers
@@ -65,6 +67,7 @@
     typically in different geographic locations. For example, east and
     west coast clusters to provide low latency service to users.
 
+
 * Writing efficient Map/Reduce functions
   Performance sensitive applications should avoid full bucket map
   reduce queries. These are queries that use just a bucket as the
@@ -73,7 +76,63 @@
   Targeted map reduce queries are recommended. These are queries that
   start at a set group of bucket/key pairs.
  
+
 * Access control and org management in Riak (users, groups, etc.)
   Riak does not provide any access control or authorization features.
+
 * Demo
   Review [[https://github.com/dreverri/sample_riak_erlang_client_app][Sample Riak Erlang Client Application]]
+
+
+* Q&A
+Question: Is it true that if we use the erlang pbc client library,
+that there are no limitations to the number of links we can have
+assigned to a riak object? How many links does it take to negatively
+effect performance in a significant way?
+
+Question: Is it possible to use the Native OTP Erlang Riak client when
+Riak is NOT on the same erlang node as the application? If not, do you
+have future plans to add support?
+
+Question: Does Riak stream data to the client - or load the item in
+memory first? ie. Is there a memory hit to large values?
+
+Question: Does WebMachine support streaming of data (for large multi
+MB results), or does it generate the result page in memory?
+
+Question: When designing applications to use Riak and Web Machine are their any gotchas we should avoid?
+ Large Items vs several linked smaller items
+ Any design approaches to improve Map Reduce performance? Searching?
+ If a node has more memory - does it improve Riak Performance?
+ For Web machine - returning a manifest and performing several smaller reads, or returning one large dataset?
+
+Question: We would like to use link walking to navigate across these
+document relationships. Is that recommended and is this efficient. Are
+links indexed?
+
+What are some of the riak recommendations to manage community orgs
+(users, groups, roles), given every community based cloud application
+has some sort of org mgmt/security model for authentication and
+permissions.
+
+What are the recommendation strategies to configure multi-tenant cloud
+solutions in Riak? Let us say want each community to have a org, data,
+log, wf (workflow), binary bucket for one particular Cloud application
+(ie: Liquid Decisions). We are proposing: communty1_data,
+community2_data so that the bucket name captures the different tenants
+as well as the logical bucket structure? The other approach is to have
+a separate Riak database for each community. What is the over-head of
+adding extra databases for performance and for management?
+
+How does WAN replication work? What are some of the best practices for
+load balancing LAN/WAN cluster? Note: our current strategy allows our
+devices to directly communicate with a node based on the node's
+availability.
+
+We want our current Item format to match a riak_object? This way we
+don't have to duplicate our relationship block in data, we would
+instead use links in metadata. We would then serialize the entire
+riak-object and send it to our client devices. What are some of the
+issues we could face? Duplicating relationships seems messy: we would
+have duplicate information, we would have to maintain post commit
+hooks to update the relationships and/or links to keep them in sync.
