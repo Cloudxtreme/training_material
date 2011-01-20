@@ -1,0 +1,42 @@
+* Quiz Show
+
+  Users answer quizzes
+
+** Getting Started
+
+   Quiz Show assumes Riak is running bound to 127.0.0.1 and listening
+   for PB connections on port 8087
+
+*** Quizzes
+
+    Quizzes are written in YAML format and stored in the quizzes
+    folder.
+
+    An importing tool has been provided that will index all quizzes in
+    the quizzes folder. The tool will store each quiz as a separate
+    Riak object and a list of available quizzes at the bucket/key pair
+    "quizzes/_index".
+
+    To run the import tool
+
+    ruby import_quizzes.rb
+
+*** Starting
+
+    make start
+
+** Usage
+
+*** Listing quizzes
+
+    curl http://127.0.0.1:8000/quizzes
+
+*** Listing answers
+
+    curl http://127.0.0.1:8000/answers --user user:pass
+
+*** Submitting answers
+
+    curl http://127.0.0.1:8000/answers/quiz-one --user user:pass -XPUT
+    -d '{"hello":"world"}'
+

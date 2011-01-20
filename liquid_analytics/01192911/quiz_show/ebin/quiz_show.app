@@ -1,0 +1,9 @@
+{application,quiz_show,
+             [{description,[]},
+              {vsn,"1"},
+              {registered,[]},
+              {applications,[kernel,stdlib]},
+              {mod,{quiz_show_app,[]}},
+              {env,[]},
+              {modules,[answers,quiz_show,quiz_show_app,quiz_show_sup,
+                        quizzes]}]}.

@@ -88,3 +88,15 @@
     What are these buckets doing?
     What questions will you be answering with this data?
     How do you need to access this data?
+
+** Example (Quiz Show)
+
+*** Quizzes
+
+    Precomputed index of quizzes stored in quizzes/_index
+
+*** Answers
+
+    Individual answers are stored at knowable keys
+    (answers/username-quizname)
+

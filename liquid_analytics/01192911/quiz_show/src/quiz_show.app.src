@@ -1,0 +1,12 @@
+{application, quiz_show,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { quiz_show_app, []}},
+  {env, []}
+ ]}.
