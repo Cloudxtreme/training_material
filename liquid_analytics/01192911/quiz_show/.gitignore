@@ -1,3 +1,4 @@
 deps
 *.beam
 .DS_Store
+ebin/quiz_show.app
