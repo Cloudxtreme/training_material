@@ -1,0 +1,21 @@
+* Adding a UI to Webmachine
+
+** Serving static content
+
+   1. Create a static content resource
+   2. Add static resource to dispatch
+   3. Test
+
+** Basic REST client with Backbone.js
+
+   1. Add basic backbone.js application
+   2. Show models, collections, views
+
+   Todo: Display quizzes, make authorized requests, submit answers,
+   list answers
+
+** Deploying Erlang Map/Reduce Functions
+
+   1. Add a code_path to Riak app.config
+   2. Place beam file in code_path
+   3. Call map/reduce functions
