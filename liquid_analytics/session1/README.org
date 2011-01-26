@@ -76,6 +76,9 @@
     Why does each job have 28 child documents? Can this be
     de-normalized?
 
+    Advised customer that all data per job should be de-normalized in
+    to a single Riak object.
+
 *** Log
 
     You included a log bucket in your documentation
@@ -83,11 +86,22 @@
     Very difficult to access log data in a meaningful way from Riak.
     Riak is not a good choice for log data analysis
 
+    Recommended turning on webmachine access log
+    Customer mentioned possibly searching the log data with Lucene
+
 *** Feed, Insights, WF
 
     What are these buckets doing?
     What questions will you be answering with this data?
     How do you need to access this data?
+
+    WF bucket was dropped
+    Feeds are discussions - I recommend maintaining _index keys per
+    discussion to track the threaded discussion
+    Insights are produced by background process
+    Customer is interested in streaming insights to users via
+    websockets
+
 
 ** Example (Quiz Show)
 
