@@ -1,0 +1,24 @@
+---
+- question: "jbegipbogpie"
+  choices:
+    - a: 1
+    - b: 2
+    - c: 3
+    - d: 4
+  answer: d
+  topic: gibberish
+
+- question: "Riak?"
+  choices:
+    - a: "Great data store"
+    - b: "Greatest data store"
+  answer: d
+  topic: common_sense
+
+- question: "3 * 3?"
+  choices:
+    - a: 1
+    - b: 9
+  answer: b
+  topic: math
+

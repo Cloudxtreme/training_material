@@ -44,10 +44,6 @@ $(function(){
     // Cache the template function for a single item.
     template: _.template($('#item-template').html()),
 
-    initialize: function() {
-      this.model.view = this;
-    },
-
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
       this.setContent();

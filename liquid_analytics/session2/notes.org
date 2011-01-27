@@ -1,14 +1,43 @@
-* Adding a UI to Webmachine
+* Session 2
+
+** Logging in Erlang
+
+   Use the error_logger module. The error_logger module allows
+   different levels of output:
+
+   - info
+   - warning
+   - error
+
+   The error_logger module also allows to types of logging:
+
+   - msg :: Output a single line of text to the log file
+   - report :: Output a structured set of data to the log file
+
+   Examples:
+
+#+begin_src erlang
+3> error_logger:info_msg("Normal operational info: ~s~n", ["arg data"]).
+
+=INFO REPORT==== 26-Jan-2011::13:11:12 ===
+Normal operational info: arg data
+
+4> error_logger:info_report([{key1, value1},{key2, value2}]).
+
+=INFO REPORT==== 26-Jan-2011::13:12:16 ===
+    key1: value1
+    key2: value2
+#+end_src
 
 ** Serving static content
 
-   1. Create a static content resource
-   2. Add static resource to dispatch
+   1. Create a static content resource (static_resource.erl)
+   2. Add static resource to dispatch (quiz_show_sup.erl)
    3. Test
 
 ** Basic REST client with Backbone.js
 
-   1. Add basic backbone.js application
+   1. Add basic backbone.js application (priv/www)
    2. Show models, collections, views
 
    Todo: Display quizzes, make authorized requests, submit answers,
@@ -17,5 +46,24 @@
 ** Deploying Erlang Map/Reduce Functions
 
    1. Add a code_path to Riak app.config
-   2. Place beam file in code_path
+
+      {riak_kv, [{add_paths, [...]}]}
+
+   2. Place beam file in code_path (quiz_show_mapreduce.erl)
    3. Call map/reduce functions
+
+** Converting Get Answers Map Reduce Function
+
+   1. Add quiz_show_mapreduce:map_found_keys/3
+   2. Update riakc_pb_socket:mapred/3
+   3. Update results capturing
+      Changed query from 2 phases to 1 phase
+
+** Get Questions By Topic
+
+   1. Add questions resource (questions.erl)
+   2. Add topic query parameter
+
+
+
+

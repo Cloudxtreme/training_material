@@ -128,15 +128,9 @@ answered_quizzes(State) ->
             Query = [
                      %% Map phase
                      {map,
-                      {jsanon, <<"function(v, keyData, arg) { return [v.key] }">>},
-                      undefined, %% arg
-                      false}, %% keep
-
-                     %% Reduce phase
-                     {reduce,
-                      {jsfun, <<"Riak.filterNotFound">>},
-                      undefined, %% arg
-                      true} %% keep
+                      {modfun, quiz_show_mapreduce, map_found_keys},
+                      undefined,%arg
+                      true}%keep
                     ],
             mapred(Inputs, Query, State);
         _ -> []
@@ -145,7 +139,7 @@ answered_quizzes(State) ->
 %% Run map reduce job
 mapred(Inputs, Query, State) ->
     Answers = case riakc_pb_socket:mapred(State#state.riak, Inputs, Query) of
-                  {ok, [{1, Results}]} -> Results;
+                  {ok, [{0, Results}]} -> Results;
                   Error -> error_logger:error_report(Error), []
               end,
     %% Remove Username prefix from each key

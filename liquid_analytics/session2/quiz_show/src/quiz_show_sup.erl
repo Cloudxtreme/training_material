@@ -49,6 +49,7 @@ init([]) ->
                 {["quizzes", key], quizzes, [Pid]},
                 {["answers"], answers, [Pid]},
                 {["answers", key], answers, [Pid]},
+                {["questions"], questions, [Pid]},
                 {['*'], static_resource, [{root, Www}]}
                ],
 
