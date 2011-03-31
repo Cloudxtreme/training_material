@@ -1,0 +1,109 @@
+* LAN
+
+** Setting up a Riak cluster
+- check "-name" in vm.args
+- riak start, riak-admin join node@host
+ - local demo using dev1, dev2, dev3
+- experiment locally with Vagrant and Chef
+ - http://blog.basho.com/2011/02/04/creating-a-local-riak-cluster-with-vagrant-and-chef/
+- Chef, Puppet, etc. highly recommended for production
+
+** Configuring a Riak cluster
+- https://wiki.basho.com/Configuration-Files.html
+- app.config
+ - riak_core
+  - ring_creation_size (must be set before starting a cluster)
+   - demo changing after first cluster run (note it doesn't take affect)
+  - http, https
+ - riak_kv
+  - pb_ip, pb_port
+
+- vm.args
+ - name
+ - setcookie
+
+** Sizing a Riak cluster
+- recommended minimum cluster size: 5
+- app.config
+ - ring_creation_size (very important parameter to figure out before
+   launching into production) (default: 64)
+  - dictates how large a cluster can grow
+- measure performance based on application load (e.g. Basho Bench)
+ - https://github.com/basho/basho_bench
+- scale the number of nodes based on requirements
+
+** General Recommendations
+- https://wiki.basho.com/Hosting-and-Server-Configuration.html
+- Multi-core 64-bit CPU
+- More RAM is good
+- Fast disks - RAID, SSD
+ - noatime on mounts
+- Fast network for cluster members
+- Virtualization - avoid if possible
+ - http://riak.minutewith.com/pages/20110209
+
+** Riak on EC2
+- same zone (east, west, etc.) for nodes
+ - use multi data center replication for multiple zones
+- security zones/firewalls
+ - https://wiki.basho.com/Network-Security-and-Firewall-Configurations.html
+ - place all EC2 instances in the same security zone
+ - handoff port (8099)
+ - Erlang distribution ports (min/max)
+  - http://www.erlang.org/faq/how_do_i.html#id55227
+- EBS delivers better performance than Ephemeral storage
+
+** Load balancing Riak
+- HAProxy
+- interesting technique
+ - setup HAProxy per "client" to load balance between all nodes
+ - "client" refers to the web application
+ - Riak driver in the "client" can reference local HAProxy load balancer
+
+** Monitoring a Riak node
+- Riak Stats
+ - information provided
+ - obtaining stats
+  - JMX
+  - SNMP
+   - https://help.basho.com/entries/218384
+  - riak-admin status
+  - "/stats"
+   - http://127.0.0.1:8098/stats (review each stat)
+
+** Backing up a Riak node
+- bitcask
+ - use standard file system backup tools (tar, rsync, etc)
+ - backup "data" folder
+- innostore
+ - riak-admin backup/restore
+
+
+** Troubleshooting Riak issues
+- identifying bottlenecks
+ - top, free, iostat, vmstat
+- log files (https://help.basho.com/entries/361469)
+- cluster_info
+- filing tickets
+ - https://help.basho.com/home
+ - provide description of issue (how to reproduce if possible)
+ - provide log folder from all nodes (tarred and gzipped)
+ - provide cluster_info from one node
+
+** CRUD tools
+- no recommended tools at this time
+- internally we use:
+ - curl
+ - riak attach (Erlang console)
+
+
+* WAN
+
+** Setting up Multi Data Center Replication (WAN)
+- https://help.basho.com/entries/206439
+- security options: stunnel, vpn
+- MDC replicates data in one direction
+ - bi-directional is possible by setting up two one-way connections
+- Clusters are independent other than replicating data
+ - m/r jobs stay within a single cluster
+
