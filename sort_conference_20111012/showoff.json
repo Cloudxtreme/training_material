@@ -1,0 +1,13 @@
+{
+  "name": "LDS SORT Conference",
+  "sections": [
+    {"section":"introduction"},
+    {"section":"riak_in_action"},
+    {"section":"vector_clocks"},
+    {"section":"links"},
+    {"section":"2i"},
+    {"section":"search"},
+    {"section":"mapreduce"},
+    {"section":"conclusion"}
+  ]
+}
