@@ -66,10 +66,18 @@ Number of keys between restart points for delta encoding of keys. Most clients s
 ### cache\_size ###
 The cache\_size determines how much data LevelDB caches in memory. Defaults to 8388608 (8MB)
 
+We recommend that you set this to be 60-80% of available RAM (available means after subtracting RAM consumed by other services including the file system cache overhead from physical memory). For example, on a 12GB machine managing a cluster with 64 partitions you might want to divide up 8GB across the LevelDB's managing each partition. Set the cache_size to 1/64th of 8GB in bytes (read: (8 * (1024 ^ 3)) / 64) 134217728 bytes (aka 128 MB).
+
 ### sync ###
 If true, the write will be flushed from the operating system buffer cache before the write is considered complete. Writes will be slower but data more durable.
 
 If this flag is false, and the machine crashes, some recent writes may be lost. Note that if it is just the process that crashes (i.e., the machine does not reboot), no writes will be lost even if sync is set to false. This is the default setting.
 
-###verify\_checksums ###
+### verify\_checksums ###
 If true, all data read from underlying storage will be verified against corresponding checksums. The default setting is false.
+
+## Tips & Tricks ##
+### Be aware of file handle limits ###
+**max\_open\_files** is the limit of open files per vnode, and has a minimum size of 20. If your node is running 64 vnodes, thats 20 * 64 = 1280 file handles that could be open. ```ulimit -n``` is a good way to tell what your open file limit is.
+
+**noatime** Mount volumes with noatime
