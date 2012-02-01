@@ -18,7 +18,7 @@
 
 3. Clone Riak 
 
-    git clone git://github.com/basho/riak_kv.git
+    git clone git://github.com/basho/riak.git
 
 4. Build Riak
 
