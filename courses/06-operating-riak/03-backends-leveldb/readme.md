@@ -1,6 +1,6 @@
 # LevelDB Backend Reference #
-[Basho's LevelDB Wiki Page](http://wiki.basho.com/LevelDB.html)
-[eLevelDB Source](http://github.com/basho/eleveldb)
+* [Basho's LevelDB Wiki Page](http://wiki.basho.com/LevelDB.html)
+* [eLevelDB Source](http://github.com/basho/eleveldb)
 
 ## Background ## 
 Google designed Key/Value store. It's a set of sorted string tables. 
@@ -37,7 +37,8 @@ The "e" is for erlang!
 
 ## Installing eLevelDB ##
 eLevelDB ships with Riak. 
-```
+
+```erlang
 %% Riak KV config
 {riak_kv, [
            %% Storage_backend specifies the Erlang module defining the storage
