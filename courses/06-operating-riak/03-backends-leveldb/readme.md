@@ -1,5 +1,6 @@
 # LevelDB Backend Reference #
 [Basho's LevelDB Wiki Page](http://wiki.basho.com/LevelDB.html)
+[eLevelDB Source](http://github.com/basho/eleveldb)
 
 ## Background ## 
 Google designed Key/Value store. It's a set of sorted string tables. 
@@ -65,8 +66,6 @@ Number of keys between restart points for delta encoding of keys. Most clients s
 
 ### cache\_size ###
 The cache\_size determines how much data LevelDB caches in memory. Defaults to 8388608 (8MB)
-
-We recommend that you set this to be 60-80% of available RAM (available means after subtracting RAM consumed by other services including the file system cache overhead from physical memory). For example, on a 12GB machine managing a cluster with 64 partitions you might want to divide up 8GB across the LevelDB's managing each partition. Set the cache_size to 1/64th of 8GB in bytes (read: (8 * (1024 ^ 3)) / 64) 134217728 bytes (aka 128 MB).
 
 ### sync ###
 If true, the write will be flushed from the operating system buffer cache before the write is considered complete. Writes will be slower but data more durable.
