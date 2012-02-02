@@ -1,6 +1,6 @@
 # Bitcask Backend Reference #
-[Bitcask Wiki Page](http://wiki.basho.com/Bitcask.html)
-[Bitcask Source](http://github.com/basho/bitcask)
+* [Bitcask Wiki Page](http://wiki.basho.com/Bitcask.html)
+* [Bitcask Source](http://github.com/basho/bitcask)
 
 ## Overview ## 
 The bitcask backend stores key/value data in a log-structured hash-table. 
