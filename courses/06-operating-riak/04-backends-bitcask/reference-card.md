@@ -1,5 +1,6 @@
 # Bitcask Backend Reference #
 [Bitcask Wiki Page](http://wiki.basho.com/Bitcask.html)
+[Bitcask Source](http://github.com/basho/bitcask)
 
 ## Overview ## 
 The bitcask backend stores key/value data in a log-structured hash-table. 
@@ -60,6 +61,11 @@ It comes bundled with Riak. Just edit your app.config
 **dead\_bytes\_threshold**: Same as the trigger, but include these files in the merge as well
 
 **small\_file\_threshold**: IF you've got files this size or smaller, go ahead and include them too.
+
+## Fold Keys Threshold ##
+**max\_fold\_age**:
+
+**max\_fold\_puts**:
 
 ## Tips & Tricks ##
 Until merge, dead bytes may take up a lot of space. Disk usage is not indicative of working set size.
