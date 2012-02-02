@@ -31,4 +31,4 @@
 
   - Resolve Siblings:
 
-        curl -v 127.0.0.1:8098/buckets/training/keys/test?returnbody=true -X PUT -H "content-type: text/plain" "x-riak-vclock: [vclock]" -d "resolved"
+        curl -v 127.0.0.1:8098/buckets/training/keys/test?returnbody=true -X PUT -H "content-type: text/plain" -H "x-riak-vclock: [vclock]" -d "resolved"
