@@ -1,7 +1,9 @@
 # LevelDB Demo #
 
 ## Requirements ##
-```{ring_creation_size, 4}``` and ```{storage_backend, riak_kv_eleveldb_backend}```
+* A single node cluster
+* curl
+* ```{ring_creation_size, 4}``` and ```{storage_backend, riak_kv_eleveldb_backend}```
 
 Make sure you stop riak, empty the ```data/ring``` and ```data/leveldb``` directories.
 
@@ -67,6 +69,7 @@ First of all, notice that ```000003.log``` is gone. Once it's read and compacted
 
 
 Let's walk through it
+
 ```
 2012/01/31-07:59:09.109436 b1bbd000 Level-0 table #5: started
 2012/01/31-07:59:09.131350 b1bbd000 Level-0 table #5: 4705910 bytes OK
@@ -85,6 +88,7 @@ The log files are about 5mb, as are the level-0 files, so when level-0 compactio
 Next step, let's add enough data to move into level-3, and see what happens. ```./03-Level3.sh```.
 
 LOG with data in level 3
+
 ```
 2012/01/31-09:37:54.281996 b1730000 Delete type=3 #1
 2012/01/31-09:41:15.306303 b1bbd000 Level-0 table #5: started
