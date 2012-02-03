@@ -35,7 +35,7 @@ drwxr-xr-x  2 joe  staff   68 Feb  3 08:02 .
 drwxr-xr-x  6 joe  staff  204 Feb  3 08:02 ..
 ```
 
-```./01-Init.sh```
+run `01-Init.sh`
 
 ```
 ➜ du -h data/bitcask  
@@ -58,7 +58,7 @@ drwxr-xr-x  6 joe  staff    204 Feb  3 08:02 ..
 
 We used 512KB files, and only wrote about 40k, so there's only one file.
 
-```02-Bigger.sh```
+Run `02-Bigger.sh`
 
 ```
 ➜ du -h data/bitcask
