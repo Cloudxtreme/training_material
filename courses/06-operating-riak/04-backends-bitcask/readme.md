@@ -28,7 +28,7 @@ It comes bundled with Riak. Just edit your app.config
            {storage_backend, riak_kv_bitcask_backend},
            %% more kv config follows
 },
-%% LevelDB Config
+%% Bitcask Config
 {bitcask, [
             {data_root, "/var/lib/riak/bitcask"}
           ]},
