@@ -2,7 +2,7 @@
 
 ## Change the numner of running JavaScript VMs
 
-Run `riak cnsole`.
+Run `riak console`.
 
 Highlight the Spidermonkey VM log messages:
 
@@ -20,7 +20,7 @@ Change `reduce_js_vm_count` to 1.
 
 Change `hook_js_vm_count` to 1.
 
-Run `riak cnsole`.
+Run `riak console`.
 
 Highlight the Spidermonkey VM log messages:
 
