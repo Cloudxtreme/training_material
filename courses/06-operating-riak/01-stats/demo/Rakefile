@@ -14,11 +14,11 @@ namespace :stats do
   task :purge do
     client = Riak::Client.new
     bucket = client.bucket("test")
-    (0..1000).each do |i|
+    (1..1000).each do |i|
       object = bucket.get("Obj#{i}")
       object.delete
     end
-    (0..1000).each do |i|
+    (1..1000).each do |i|
       object = bucket.get("LargeObj#{i}")
       object.delete
     end
@@ -31,7 +31,7 @@ namespace :stats do
     # gets and puts
     client = Riak::Client.new
     bucket = client.bucket("test")
-    (0..1000).each do |i|
+    (1..1000).each do |i|
       object = bucket.get_or_new("Obj#{i}")
       object.data = "This is just test data"
       object.content_type = "text/plain"
@@ -49,7 +49,7 @@ namespace :stats do
     puts "--------------------------------------------"
     client = Riak::Client.new
     bucket = client.bucket("test")
-    (0..1000).each do |i|
+    (1..1000).each do |i|
       object = bucket.get("Obj#{i}")
     end
     puts "demo2: After"
@@ -67,7 +67,7 @@ namespace :stats do
     bucket = client.bucket("test")
     value = ""
     (0..2048).each {|i| value += "A"}
-    (0..1000).each do |i|
+    (1..1000).each do |i|
       object = bucket.get_or_new("LargeObj#{i}")
       object.data = value
       object.content_type = "text/plain"
@@ -87,7 +87,7 @@ namespace :stats do
     # get/put larger objects
     client = Riak::Client.new
     bucket = client.bucket("test")
-    (0..1000).each do |i|
+    (1..1000).each do |i|
       object = bucket.get("LargeObj#{i}")
     end
     puts "demo4: After"
@@ -111,7 +111,7 @@ namespace :stats do
       values[0] += "B"
       values[1] += "C"
     end
-    (0..1000).each do |i|
+    (1..1000).each do |i|
       object1 = bucket.get("LargeObj#{i}")
       object2 = bucket.get("LargeObj#{i}")
       object1.data = values[0]
