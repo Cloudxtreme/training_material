@@ -36,7 +36,7 @@ Reset VM counts to their original values (`8`, `6`, `2`).
 
 Add a `text/plain` object to Riak with the body `bar`.
 
-Extract the value of th object using a JavaScript MapReduce job.
+Extract the value of the object using a JavaScript MapReduce job.
 
 Add an `arg` to the phase and extract its value.
 
