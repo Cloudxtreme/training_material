@@ -81,11 +81,15 @@ url ```http://node:port/stats```
 
 
 ## CPU ##
+CPU Stats are taken directly from erlang's cpu\_sup module. [ErlDocs: cpu_sup](http://erldocs.com/R14B04/os_mon/cpu_sup.html?i=0&search=cpu#undefined)
+
 **cpu\_nprocs**: number of unix processes
 
-**cpu\_avg1** \\ **cpu\_avg5** \\ **cpu\_avg15** : equivalent to top's "load average". Divide by 256 for percentage
+**cpu\_avg1** \\ **cpu\_avg5** \\ **cpu\_avg15** : equivalent to top's "load average" when divided by 256. This is not a percentage, but rather the average number of active processes.
 
 ## Memory ##
+Memory Stats are taken directly from the erlang vm. [ErlDocs: Memory](http://erldocs.com/R14B04/erts/erlang.html?i=0&search=erlang:memory#memory/0)
+
 **memory_total**: Total memory available
 
 **memory_processes**: 
