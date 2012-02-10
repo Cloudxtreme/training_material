@@ -26,6 +26,8 @@ If that's too hard to read, there are options `-b,-k,-m,-g show output in bytes,
 ### lsof ###
 `lsof | wc -l` -> How many open file handles do I have?
 
+`lsof` will actually list them all.
+
 ## Aggregation Tools ##
 Many of these utilities are very good for debugging, but for monitoring an environment, 
 
