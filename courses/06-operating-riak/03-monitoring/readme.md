@@ -28,11 +28,16 @@ If that's too hard to read, there are options `-b,-k,-m,-g show output in bytes,
 
 `lsof` will actually list them all.
 
+## Alerting Tools ##
+
+### nagios ###
+If you can get the information you need at the command line, you're pretty close to having a nagios check
+
+### collectd ###
+[collectd Homepage](http://collectd.org/)
+
 ## Aggregation Tools ##
 Many of these utilities are very good for debugging, but for monitoring an environment, 
-
-### Nagios ###
-If you can get the information you need at the command line, you're pretty close to having a nagios check
 
 ### Graphite ###
 [Graphite](http://graphite.wikidot.com/) - The new hotness in graphing data
