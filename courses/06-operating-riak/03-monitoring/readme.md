@@ -44,3 +44,6 @@ Many of these utilities are very good for debugging, but for monitoring an envir
 
 ### Splunk ###
 [Splunk](http://www.splunk.com/) Operational Intelligence by monitoring, reporting and analyzing real-time machine data.
+
+## Community Authored Plugins ##
+[Community Developed Plugins](http://wiki.basho.com/Community-Developed-Libraries-and-Projects.html#Monitoring%2C-Management%2C-and-GUI-Tools)
