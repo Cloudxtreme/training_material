@@ -3,6 +3,7 @@
 ## Groups
 
 Create 10 person objects using the keys below
+
 * dan
 * joe
 * ian
@@ -15,6 +16,7 @@ Create 10 person objects using the keys below
 * vin
 
 Create 3 group objects linking to persons
+
 * trainer: dan, joe, ian
 * da: dan, ian, tryn, sowjanya, brian, tanya, justin
 * ps: casey, joe, vin
@@ -33,6 +35,7 @@ Find the persons belonging to the same groups as dan and also return the groups
 
 Create several directory objects that link to persons by the first letter of 
 their first name. For example:
+
 * `directory/d` would link to `person/dan`
 * `directory/j` would link to `person/joe`, and `person/justin`
 * `directory/i` would like to `person/ian`
@@ -40,6 +43,7 @@ their first name. For example:
 Link walk to all persons whose name begins with the letter `t`.
 
 Link walk to all persons whose name begins with the letters `d`, `j`, `i`.
+
 * hint: this will require multiple requests
 
 Repeat the previous query using a MapReduce link phase
@@ -61,8 +65,10 @@ For example:
 Link walk to all persons whose name begins with the letter `t`.
 
 Link walk to all persons whose name begins with the letters `d`, `j`, `i`.
+
 * hint: this will require multiple requests
 
 Repeat the previous query using MapReduce
+
 * hint: you need to write a custom MapReduce function
 * hint: don't use a link phase
