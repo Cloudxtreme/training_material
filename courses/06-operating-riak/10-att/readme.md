@@ -10,13 +10,16 @@ DYNECT is used to resolve the following domains
 ** data.attstorage.com **
 ** *.data.attstorage.com **
 
-**NOTE**: Waiting on John Dewey for this information
+**NOTE**: There
 
 ## Pound ##
 Used to manage SSL certificates, and redirect traffic to MOSS on port 8080. It is configured to listen on the external IP of the storage node on port 443.
 
 ## MOSS Overview ##
-It's like S3. It is only accessible from the outside via Pound. 
+MOSS is Riak's S3 interface. It implements the S3 API for Riak. It is only accessible from the outside via Pound. 
+
+#### Current Status ####
+MOSS currently bypasses HAProxy, due to an issue with large files. 
 
 ## HAProxy ##
 Used to load balance Riak EE. Compute applications will access Riak via these HAProxy instances which redirect to Riak running on the same host. If that host's instance of Riak is down, HAProxy then redirects traffic evenly to the other nodes in the cluster. HAProxy listens on 10.0.0.0/8 interfaces on ports 8098 and 8087 which are the ports Riak traditionally listens on.
@@ -32,6 +35,7 @@ Deployed to /usr/lib/riak\_nagios
 `check_riak` is a shell script wrapper for available riak tests.
 
 Nagios is also configured to fire an alert if any of the following processes are not running on a storage node: pound, epmd, haproxy, memsup, cpu\_sup, beam.smp, and run\_erl
+
 ### NPRE ###
 Sample entries in `/etc/nagios/npre.cfg`
 ```
