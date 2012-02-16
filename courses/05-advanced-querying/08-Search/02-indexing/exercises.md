@@ -17,9 +17,9 @@ Index demo data into the `cmd-index` index using `search-cmd index`
 
 Use `search-cmd search` to search the documents using the query `demo`
 
-## search:search/1,2
+## search:index/1,2
 
-Index demo data into the `search-index` index using `search:search(Index, Path)`
+Index demo data into the `search-index` index using `search:index(Index, Path)`
 
 Use `search-cmd search` to search the documents using the query `demo`
 
