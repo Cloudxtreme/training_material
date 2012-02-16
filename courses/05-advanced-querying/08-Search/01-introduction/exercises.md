@@ -1,5 +1,13 @@
 # Search - Introduction
 
+## Enabling
+
+Open the file `etc/app.config`
+
+Locate the `riak_search` section
+
+Set `enabled` to `true`
+
 ## Indexing
 
 Open the file `search-introduction.xml`
