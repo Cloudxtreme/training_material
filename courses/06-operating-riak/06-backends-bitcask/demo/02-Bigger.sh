@@ -17,5 +17,3 @@ while [ $key -le 4000 ]; do
 done
 
 echo -e
-
-## 4000 good for level0
