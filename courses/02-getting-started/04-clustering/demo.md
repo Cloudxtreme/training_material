@@ -2,7 +2,7 @@
 
 Download the `generate-node.sh` script from Github
 
-    curl -O https://raw.github.com/gist/1672990/e4946eeebff27732f005d47fa66e1ea6f6f72e41/generate-node.sh
+    curl https://raw.github.com/gist/1672990 -o generate-node.sh
     chmod a+x generate-node.sh
 
 Create three test nodes

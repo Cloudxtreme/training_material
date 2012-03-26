@@ -13,13 +13,13 @@ Create a directory of text files
 
 ## search-cmd index
 
-Index demo data into the `cmd-index` index using `search-cmd index`
+Index demo data into the `cmd-index` index using `search-cmd index INDEX PATH`
 
 Use `search-cmd search` to search the documents using the query `demo`
 
 ## search:index/1,2
 
-Index demo data into the `search-index` index using `search:index(Index, Path)`
+Index demo data into the `search-index` index using `search:index(Index, Path)` while attached to the Riak node
 
 Use `search-cmd search` to search the documents using the query `demo`
 

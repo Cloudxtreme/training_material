@@ -2,11 +2,11 @@
 
 1. Add a "text/plain" object to Riak with the body "bar"
 
-2. Extract the body of the object using MapReduce
+2. Extract the body of the object using MapReduce (`fun(Obj, _, _) -> [riak_object:get_value(Obj)] end.`)
 
-3. Add an "arg" to the phase and extract its value
+3. Add an "arg" to the phase and extract its value (`fun(_, _, Arg) -> [Arg] end.`)
 
-4. Add keydata to the inputs and extract its value
+4. Add keydata to the inputs and extract its value (`fun(_, KD, _) -> [KD] end.`)
 
 5. Add several more "text/plain" objects with multi-word bodies
 
