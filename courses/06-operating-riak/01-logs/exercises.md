@@ -6,7 +6,7 @@ Clear out your logs folder (You should know where that is)
 
 Launch a Riak console: `riak console`
 
-In the console`erlang:whereis(riak_kv_vnode_master) ! crazy_talk.` What you're doing here is sending the vnode_master a message that it can't handle.
+In the console`erlang:whereis(riak_core_node_watcher) ! crazy_talk.` What you're doing here is sending the node_watcher a message that it is not intended to handle.
 
 This crashes an Erlang process, but not the Erlang VM. What files do you expect to have entries? Go look!
 
