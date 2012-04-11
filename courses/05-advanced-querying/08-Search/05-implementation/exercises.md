@@ -36,6 +36,7 @@ What index, field, term entries would be generated if the following document was
 * quotes, quote, fills
 * quotes, quote, a
 * quotes, quote, much-needed
+* quotes, quote, gap
 * quotes, author, Moses
 * quotes, author, Hadas
 
