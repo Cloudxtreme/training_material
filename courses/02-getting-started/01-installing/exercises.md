@@ -2,7 +2,7 @@
 
 ## Package Install
 
-1. Go to http://basho.com/resources/downloads/
+1. Open the URL: http://basho.com/resources/downloads/
 
 2. Navigate to Riak > CURRENT
 
@@ -14,9 +14,9 @@
 
 1. Install kerl (https://github.com/spawngrid/kerl)
 
-2. Install Erlang 
+2. Install Erlang
 
-3. Clone Riak 
+3. Clone Riak
 
     git clone git://github.com/basho/riak.git
 

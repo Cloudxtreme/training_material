@@ -1,6 +1,6 @@
 1) Requests through failures
 
-  - Stora an object:
+  - Store an object:
 
         curl -v 127.0.01:8098/buckets/training/keys/test?returnbody=true\&pw=1 -X PUT -H "content-type: text/plain" -d "testing"
 

@@ -10,15 +10,13 @@ Ping Riak using `riak ping`.
 
 Attach to Riak using `riak attach`.
 
-Demonstrate that you are connected to the Riak process by obtaining the OS PID 
+Demonstrate that you are connected to the Riak process by obtaining the OS PID
 from the node using `os:getpid()`.
 
-Disconnect from Riak by pressing CTRL-D. Make note that this is the only safe 
-way to disconnect from the node; the provided exercises will demonstrate unsafe 
-methods.
+Disconnect from Riak by pressing CTRL-D. Make note that this is the only safe
+way to disconnect from the node; the provided exercises will demonstrate unsafe methods.
 
-Use `ps aux|grep beam` to find the OS PID and compare to the value returned by 
-Riak.
+Use `ps aux | grep beam` to find the OS PID and compare to the value returned by Riak.
 
 ## Console
 

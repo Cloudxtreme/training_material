@@ -1,19 +1,33 @@
-## Excercises ##
+## Exercises
 
-### Crash and Erlang Process ###
+### Crash an Erlang Process
 
-Clear out your logs folder (You should know where that is)
+Remove the contents of Riak's log directory. (You should know where that is)
 
 Launch a Riak console: `riak console`
 
-In the console`erlang:whereis(riak_core_node_watcher) ! crazy_talk.` What you're doing here is sending the node_watcher a message that it is not intended to handle.
+In the console, enter the following:
 
-This crashes an Erlang process, but not the Erlang VM. What files do you expect to have entries? Go look!
+    erlang:whereis(riak_core_node_watcher) ! crazy_talk.
+
+What you are doing here is sending the node_watcher a message that it is not intended to handle.
+
+This crashes an Erlang process, but not the Erlang virtual machine. What files do you expect to have entries?
+
+Go look!
 
 ### Crash the Erlang VM ###
 
-Clear out your log folder again and start riak.
+Make sure Riak is stopped.
 
-Sure, it's easy to kill a process, but to get the VM to crash, we'll need a `kill -usr1`. Kill your riak process.
+Remove the contents of Riak's log directory, and then start Riak.
 
-What do you expect to see? Compare the contents of your log files.
+While it's easy to kill an Erlang process, it takes a bit more to make the Erlang virtual machine to crash. One way to do so is by sending a USR1 signal to the Riak process.
+
+One way to send USR1 to your Riak process is:
+
+    killall -SIGUSR1 beam.smp
+
+What do you expect to see in the logs this time?
+
+Compare your expectation to the contents of your actual log files.

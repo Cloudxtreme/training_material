@@ -12,4 +12,4 @@
 
         curl -v http://127.0.0.1:8098/buckets/training/keys/my-first-object -X DELETE
 
-2) Store, fetc,h and update an object making sure to submit the vclock when updating
+2) Store, fetch, and update an object making sure to submit the vclock when updating

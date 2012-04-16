@@ -5,7 +5,7 @@
 
 **crash.log**: Detailed crash information
 
-**erl_crash.dump**: The entire state of the ErlangVM at the time of VM crash.
+**erl_crash.dump**: The entire state of the Erlang VM at the time of VM crash.
 
 **error.log**: Will note crashes, but not the details
 

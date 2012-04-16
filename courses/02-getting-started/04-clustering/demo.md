@@ -7,12 +7,12 @@ Download the `generate-node.sh` script from Github
 
 Create three test nodes
 
-    generate-node.sh /path/to/bin/riak test1
-    generate-node.sh /path/to/bin/riak test2
-    generate-node.sh /path/to/bin/riak test3
+    ./generate-node.sh /path/to/bin/riak test1
+    ./generate-node.sh /path/to/bin/riak test2
+    ./generate-node.sh /path/to/bin/riak test3
 
-Explain that the `generate-node.sh` script uses the basename of the destination 
-directory as the node name. For example, the above three nodes have the names 
+Explain that the `generate-node.sh` script uses the basename of the destination
+directory as the node name. For example, the above three nodes have the names
 `test1@127.0.0.1`, `test2@127.0.0.1`, and `test3@127.0.0.1`.
 
 Start the three test nodes

@@ -1,13 +1,16 @@
-# Monitoring #
+# Monitoring
 
-## Stats! ##
+## Stats!
+
 Remember Stats? They're useful in monitoring.
 
-## OS Level ##
-### free ###
-`free` is a command that will help you monitor a physical node's memory usage
+## OS Level
 
-Here's some sample output
+### free
+
+`free` is a command that helps you to monitor a physical node's memory usage.
+
+Example output from `free`
 
 ```
              total       used       free     shared    buffers     cached
@@ -16,34 +19,43 @@ Mem:       3772692    3136556     636136          0     208416    1471592
 Swap:      1048572      23008    1025564
 ```
 
-If that's too hard to read, there are options `-b,-k,-m,-g show output in bytes, KB, MB, or GB`
+The default output is not optimal for human readability, but there are options `-b`, `-k`, `-m`, `-g`  to show output in bytes, KB, MB, or GB.
 
-### df & du ###
-`df` will tell you how much space is available on a particular mount point, or all mount points if given without arguments
+### df & du
 
-`du` will tell you how much space each file is using. `du -s` will not recurse into directories
+The `df` command shows you how much space is available on a particular mount point, or all mount points if given no arguments.
 
-### lsof ###
-`lsof | wc -l` -> How many open file handles do I have?
+The `du` command shows you how much space each file is using. When executed without arguments, `du` will recurse into every subdirectory of the directory provided (or current directory). Use `du -s` to avoid this directory recursion.
 
-`lsof` will actually list them all.
+### lsof
 
-## Alerting Tools ##
+The `lsof` command will list all open files on the system if given no arguments.
 
-### nagios ###
-If you can get the information you need at the command line, you're pretty close to having a nagios check
+You can use `lsof` in combination with the `wc` command to answer the question: "How many file handles are currently open on this system?":
 
-### collectd ###
+    lsof | wc -l
+
+## Alerting Tools
+
+### Nagios
+
+If you can get the information you need at the command line, you're pretty close to having a Nagios check.
+
+### collectd
+
 [collectd Homepage](http://collectd.org/)
 
-## Aggregation Tools ##
-Many of these utilities are very good for debugging, but for monitoring an environment, 
+## Aggregation Tools
 
-### Graphite ###
-[Graphite](http://graphite.wikidot.com/) - The new hotness in graphing data
+Many of these utilities are very good for debugging, spotting trends, and filtering and graphing historical data.
 
-### Splunk ###
-[Splunk](http://www.splunk.com/) Operational Intelligence by monitoring, reporting and analyzing real-time machine data.
+### Graphite
 
-## Community Authored Plugins ##
+[Graphite](http://graphite.wikidot.com/) - The new hotness in graphing data.
+
+### Splunk
+
+[Splunk](http://www.splunk.com/) Operational Intelligence by monitoring, reporting, and analyzing real-time machine data.
+
+## Community Authored Plugins
 [Community Developed Plugins](http://wiki.basho.com/Community-Developed-Libraries-and-Projects.html#Monitoring%2C-Management%2C-and-GUI-Tools)
