@@ -1,19 +1,21 @@
-1) Requests through failures
+# Basic Querying - Advanced Basic Querying
 
-  - Store an object:
+## Requests Through Failures
 
-        curl -v 127.0.01:8098/buckets/training/keys/test?returnbody=true\&pw=1 -X PUT -H "content-type: text/plain" -d "testing"
+Start a cluster with at least 3 nodes.
 
-  - Stop two nodes
+Store an object:
 
-  - Run the following commands:
+    curl -v 127.0.01:8098/buckets/training/keys/test\?returnbody=true\&pw=1 -X PUT -H "content-type: text/plain" -d "testing"
 
-        curl -v 127.0.0.1:8098/buckets/training/keys/test?pr=3
+Stop two nodes, and then execute the following requests:
 
-        curl -v 127.0.0.1:8098/buckets/training/keys/test?r=3
+    curl -v 127.0.0.1:8098/buckets/training/keys/test\?pr=3
+
+    curl -v 127.0.0.1:8098/buckets/training/keys/test\?r=3
 
 
-2) Getting and Setting bucket properties
+## Getting and Setting Bucket Properties
 
   - Get:
 
@@ -23,12 +25,12 @@
 
         curl -v 127.0.0.1:8098/buckets/training/props -X PUT -H "content-type: application/json" -d '{ "props": { "allow_mult":true, "r":1 } }'
 
-3) Siblings
+## Siblings
 
   - Create Siblings:
 
-        curl -v 127.0.0.1:8098/buckets/training/keys/test?returnbody=true -X PUT -H "content-type: text/plain" -d "sibling"
+        curl -v 127.0.0.1:8098/buckets/training/keys/test\?returnbody=true -X PUT -H "content-type: text/plain" -d "sibling"
 
   - Resolve Siblings:
 
-        curl -v 127.0.0.1:8098/buckets/training/keys/test?returnbody=true -X PUT -H "content-type: text/plain" -H "x-riak-vclock: [vclock]" -d "resolved"
+        curl -v 127.0.0.1:8098/buckets/training/keys/test\?returnbody=true -X PUT -H "content-type: text/plain" -H "x-riak-vclock: [vclock]" -d "resolved"

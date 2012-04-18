@@ -1,12 +1,12 @@
 # MapReduce - Map
 
-Open "etc/app.config"
+Open "etc/app.config".
 
-Scroll down to the "riak_kv" section
+Scroll down to the "riak_kv" section.
 
-Add "{allow_strfun, true}" and restart Riak
+Add "{allow_strfun, true}", and restart Riak.
 
-Add several "text/plain" objects to Riak
+Add several "text/plain" objects to Riak:
 
     curl -XPUT http://localhost:8098/riak/docs/foo \
 	-H 'Content-Type: text/plain' -d 'demo data goes here'
@@ -17,8 +17,7 @@ Add several "text/plain" objects to Riak
     curl -XPUT http://localhost:8098/riak/docs/qux \
 	-H 'Content-Type: text/plain' -d 'demo demo'
 
-Count the occurrence of the word "demo" in every document in the "docs" 
-bucket
+Count the occurrence of the word "demo" in every document in the "docs" bucket:
 
     curl -XPOST http://localhost:8098/mapred \
          -H 'Content-Type: application/json' \
@@ -35,7 +34,7 @@ bucket
                            [[Key, Count]]
                          end."}}]}'
 
-Update the MapReduce job to use an argument
+Update the MapReduce job to use an argument:
 
     curl -XPOST http://localhost:8098/mapred \
          -H 'Content-Type: application/json' \
@@ -53,7 +52,7 @@ Update the MapReduce job to use an argument
                            [[Key, Count]]
                          end."}}]}'
 
-Update the MapReduce job to just query the "foo", "bar", "baz" docs
+Update the MapReduce job to just query the "foo", "bar", "baz" docs:
 
     curl -XPOST http://localhost:8098/mapred \
          -H 'Content-Type: application/json' \
@@ -71,13 +70,13 @@ Update the MapReduce job to just query the "foo", "bar", "baz" docs
                            [[Key, Count]]
                          end."}}]}'
 
-Update the MapReduce job to use keydata
+Update the MapReduce job to use keydata:
 
     curl -XPOST http://localhost:8098/mapred \
          -H 'Content-Type: application/json' \
          -d '{"inputs":[["docs", "foo", "data"],
-			["docs", "bar", "here"],
-			["docs", "baz", "nothing"]],
+                        ["docs", "bar", "here"],
+                        ["docs", "baz", "nothing"]],
               "query":[{"map":{"language":"erlang",
                 "source":"fun(Object, KD, _A) ->
                            Key = riak_object:key(Object),

@@ -2,31 +2,31 @@
 
 ## Start, Ping
 
-1. Start Riak
+1. Start Riak:
 
     riak start
 
-2. Ping Riak
+2. Ping Riak:
 
     riak ping
 
 3. What did the command return?
 
-## Attach
+## Attach to Riak
 
 ### Attempt 1
 
-1. Start Riak
+1. Start Riak:
 
     riak start
 
-2. Attach to Riak
+2. Attach to Riak:
 
     riak attach
 
-3. Press CTRL-C twice
+3. Press CTRL-C twice.
 
-4. Ping Riak
+4. Ping Riak:
 
      riak ping
 
@@ -34,19 +34,19 @@
 
 ### Attempt 2
 
-1. Start Riak
+1. Start Riak:
 
      riak start
 
-2. Attach to Riak
+2. Attach to Riak:
 
      riak attach
 
-3. Type the following
+3. Type the following:
 
      q().
 
-4. Ping Riak
+4. Ping Riak:
 
      riak ping
 
@@ -54,17 +54,17 @@
 
 ### Attempt 3
 
-1. Start Riak
+1. Start Riak:
 
      riak start
 
-2. Attach to Riak
+2. Attach to Riak:
 
      riak attach
 
-3. Press CTRL-D
+3. Press CTRL-D.
 
-4. Ping Riak
+4. Ping Riak:
 
      riak ping
 
@@ -72,54 +72,54 @@
 
 ## Console
 
-1. Start Riak
+1. Start Riak:
 
      riak start
 
-2. Try to access the console
+2. Try to access the console:
 
      riak console
 
-3. Stop Riak
+3. Stop Riak:
 
      riak stop
 
-4. Try to access the console again
+4. Try to access the console again:
 
      riak console
 
 ## Restart
 
-1. Start Riak
+1. Start Riak:
 
      riak start
 
-2. Ping Riak
+2. Ping Riak:
 
      riak ping
 
-3. Restart Riak
+3. Restart Riak:
 
      riak restart
 
-4. Ping Riak
+4. Ping Riak:
 
      riak ping
 
 ## Stop
 
-1. Start Riak
+1. Start Riak:
 
      riak start
 
-2. Ping Riak
+2. Ping Riak:
 
      riak ping
 
-3. Stop Riak
+3. Stop Riak:
 
      riak stop
 
-4. Ping Riak
+4. Ping Riak:
 
      riak ping

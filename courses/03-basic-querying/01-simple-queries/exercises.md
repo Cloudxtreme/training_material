@@ -1,3 +1,5 @@
+# Basic Querying - Simple Queries
+
 1) Perform the following requests:
 
   - Store:

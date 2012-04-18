@@ -18,7 +18,7 @@ Run `make rel`.
 Show the directory that is created: `rel/riak`.
 
 Explain that `rel/riak` contains a completely self contained version of Riak
-including it's own copy of the Erlang runtime system.
+including its own copy of the Erlang runtime system.
 
 ### make stage
 
