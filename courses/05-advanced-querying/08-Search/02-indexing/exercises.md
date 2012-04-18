@@ -17,7 +17,7 @@ Index demo data into the `cmd-index` index using `search-cmd index INDEX PATH`
 
 Use `search-cmd search` to search the documents using the query `demo`
 
-## search:index/1,2
+## search:index_dir/1,2
 
 Index demo data into the `search-index` index using `search:index_dir(Index, Path)` while attached to the Riak node
 
