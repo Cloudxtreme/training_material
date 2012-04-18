@@ -38,6 +38,7 @@ Nagios is also configured to fire an alert if any of the following processes are
 
 ### NPRE ###
 Sample entries in `/etc/nagios/npre.cfg`
+
 ```
 command[check_stud]=/usr/lib/nagios/plugins/check_procs -c 1:5 -C stud 
 command[check_epmd]=/usr/lib/nagios/plugins/check_procs -c 1:5 -C epmd
