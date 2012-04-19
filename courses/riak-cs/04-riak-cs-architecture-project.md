@@ -12,9 +12,17 @@ sudo dpkg -i PACKAGE_NAME
 * Locate the configuration files for Riak, Stanchion, and Riak CS
 
 ```
+# Riak
 /etc/riak/app.config
+/etc/riak/vm.args
+
+# Stanchion
 /etc/stanchion/app.config
+/etc/stanchion/vm.args
+
+# Riak CS
 /etc/riak-cs/app.config
+/etc/riak-cs/vm.args
 ```
 
 * Determine the port Riak is listening on for protocol buffers
