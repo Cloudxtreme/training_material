@@ -2,7 +2,7 @@
 
 ## Download and Install
 
-* Download Riak, Stanchion, and Riak CS from Zendesk
+* Download Riak, Stanchion, and Riak CS from http://help.basho.com
 
 * Install Riak, Stanchion, and Riak CS
 
