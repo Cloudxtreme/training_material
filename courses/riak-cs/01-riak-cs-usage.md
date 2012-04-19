@@ -74,11 +74,9 @@ s3cmd del s3://BUCKET/OBJECT
 s3cmd put --recursive DIRNAME s3://BUCKET
 ```
 
-# Applying ACLs
+# Applying Object ACLs
 
-## Object
-
-### Public
+## Public
 
 ```
 s3cmd put --acl-public s3://BUCKET/OBJECT
@@ -86,7 +84,7 @@ s3cmd setacl --acl-public s3://BUCKET/OBJECT
 s3cmd setacl --acl-public --recursive s3://BUCKET
 ```
 
-### Private
+## Private
 
 ```
 s3cmd put --acl-private s3://BUCKET/OBJECT
