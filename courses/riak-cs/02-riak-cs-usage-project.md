@@ -10,7 +10,8 @@ proxy_port = 80
 * Create a new user
 
 ```
-curl -X POST http://107.20.111.200/user --data "email=EMAIL_ADDRESS&name=NAME"
+curl -X POST http://107.20.111.200/user \
+        --data "email=EMAIL_ADDRESS&name=NAME"
 ```
 
 * Update `~/.s3cfg`
@@ -49,7 +50,8 @@ mkdir images
 ```
 for i in {1..5}
 do
-        curl http://placekitten.com/g/200/300 -o images/kitten${i}
+        curl http://placekitten.com/g/200/300 \
+                -o images/kitten${i}
 done
 ```
 

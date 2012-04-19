@@ -1,7 +1,8 @@
 # Creating a User
 
 ```
-curl -X POST http://HOST:PORT/user --data "email=foo@bar.com&name=foo%20bar"
+curl -X POST http://HOST:PORT/user \
+        --data "email=foo@bar.com&name=foo%20bar"
 ```
 
 * Users cannot currently be modified
@@ -11,7 +12,7 @@ curl -X POST http://HOST:PORT/user --data "email=foo@bar.com&name=foo%20bar"
 * http://s3tools.org/repositories
 
 ```
-# OS X homebrew
+ # OS X homebrew
 brew install s3cmd
 ```
 
