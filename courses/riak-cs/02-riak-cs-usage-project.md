@@ -1,6 +1,6 @@
 # Publish a Website on Riak CS
 
-* Information
+* Riak CS Information
 
 ```
 proxy_host = 107.20.111.200
