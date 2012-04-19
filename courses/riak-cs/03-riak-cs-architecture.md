@@ -1,3 +1,5 @@
+# Riak CS Architecture
+
 # Riak CS Architecture (basic)
 
 

@@ -7,7 +7,7 @@
 * Install Riak, Stanchion, and Riak CS
 
 ```bash
-# Ubuntu
+ # Ubuntu
 sudo dpkg -i PACKAGE_NAME
 ```
 
@@ -16,15 +16,15 @@ sudo dpkg -i PACKAGE_NAME
 * Locate the configuration files for Riak, Stanchion, and Riak CS
 
 ```bash
-# Riak
+ # Riak
 /etc/riak/app.config
 /etc/riak/vm.args
 
-# Stanchion
+ # Stanchion
 /etc/stanchion/app.config
 /etc/stanchion/vm.args
 
-# Riak CS
+ # Riak CS
 /etc/riak-cs/app.config
 /etc/riak-cs/vm.args
 ```
@@ -36,7 +36,7 @@ sudo dpkg -i PACKAGE_NAME
 * Add Riak CS's libraries to the code path
 
 ```
-# Add to the end of the existing vm.args file
+ # Add to the end of the existing vm.args file
 -pa /usr/lib/riak-cs/lib/riak_moss-1.0.1/ebin
 ```
 
