@@ -1,4 +1,4 @@
- # Riak CS Architecture (basic)
+# Riak CS Architecture (basic)
 
 
       +------------------+
@@ -42,7 +42,7 @@
 * Serialization Point
 * Required for Certain Operations
 
-## What Reuqests Require Serialization?
+## What Requests Require Serialization?
 
 * User Creation
 * Bucket Creation
