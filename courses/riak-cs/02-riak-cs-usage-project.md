@@ -9,6 +9,10 @@ proxy_port = 80
 
 * Create a new user
 
+```
+curl -X POST http://107.20.111.200/user --data "email=EMAIL_ADDRESS&name=NAME"
+```
+
 * Update `~/.s3cfg`
 
 * Create a bucket
@@ -24,7 +28,7 @@ mkdir my_website
 cd my_website
 ```
 
-* Create an `index.html` file
+* Create an `index.html` file with the following contents
 
 ```
 <html>
