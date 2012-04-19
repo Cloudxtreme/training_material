@@ -1,14 +1,15 @@
- # Deploy Riak CS to a Local VM
+# Deploy Riak CS to a Local VM
 
 * Download Riak, Stanchion, and Riak CS from Zendesk
 
 * Install Riak, Stanchion, and Riak CS
 
 ```bash
+# Ubuntu
 sudo dpkg -i PACKAGE_NAME
 ```
 
-* Local the configuration files for Riak, Stanchion, and Riak CS
+* Locate the configuration files for Riak, Stanchion, and Riak CS
 
 ```
 /etc/riak/app.config
