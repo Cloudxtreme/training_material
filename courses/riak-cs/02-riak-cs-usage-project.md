@@ -33,9 +33,9 @@ cd my_website
 
 ```
 <html>
-        <img src="images/kittah1">
-        <img src="images/kittah2">
-        <img src="images/kittah3">
+        <img src="images/kitten1">
+        <img src="images/kitten2">
+        <img src="images/kitten3">
 </html>
 ```
 
