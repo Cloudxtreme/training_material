@@ -23,17 +23,13 @@ s3cmd --configure
 
 * Set `access_key`
 * Set `secret_key`
-
-## Development/Test Instances
-
-* Set `proxy_host`
-* Set `proxy_port`
-
-## data.attstorage.com
-
-* Manually modify `~/.s3cfg`
-* Set `host_base = s3.amazonaws.com`
-* Set `host_bucket = %(bucket)s.s3.amazonaws.com`
+* Development/Test
+ * Set `proxy_host`
+ * Set `proxy_port`
+* data.attstorage.com
+ * Manually modify `~/.s3cfg`
+ * Set `host_base = data.attstorage.com`
+ * Set `host_bucket = %(bucket)s.data.attstorage.com`
 
 # Listing Buckets
 
