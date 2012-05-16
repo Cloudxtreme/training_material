@@ -1,6 +1,6 @@
 # MapReduce - JavaScript
 
-## Change the numner of running JavaScript VMs
+## Change the number of running JavaScript VMs
 
 Run `riak console`.
 
