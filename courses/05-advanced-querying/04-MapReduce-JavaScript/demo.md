@@ -2,7 +2,7 @@
 
 ## Change the number of running JavaScript VMs
 
-Run `riak cnsole`.
+Run `riak console`.
 
 Highlight the Spidermonkey VM log messages:
 
