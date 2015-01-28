@@ -1,3 +1,0 @@
-[submodule "riak_onedotoh_preview"]
-	path = riak_onedotoh_preview
-	url = git@github.com:basho/riak-onedotoh-preview.git
