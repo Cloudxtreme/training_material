@@ -56,7 +56,7 @@ Please read the following rules carefully. Legacy material that does not follow 
 
 + author's discretion applies with regards to how many software versions a particular presentation should attempt to cover. If a new version implies only a few minor changes, these can be listed under version sub-headings within the original presentation; whereas if the differences are widespread or conceptually substantial, a fresh copy of the presentation should be stored in the repo that applies only to the new software version with all outdated information removed
 + under no circumstances should presentations applying to previous software versions be overwritten, or even allowed to sink into version control history, because these presentations may still be used; rather entirely new copies should be reposited
-+ this implies that presentations should be named to include both title and version information, e.g.
- + Backends_Bitcask_1.4.x
- + Backends_Bitcask_2.0.x
++ presentations should be placed in subfolders by version, e.g.
+ + 1.4/Bitcask_Backend
+ + 2.0/Bitcask_Backend
  + etc.
