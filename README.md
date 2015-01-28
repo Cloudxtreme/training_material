@@ -5,7 +5,7 @@ Basho Training Material
 
 The official repository for Basho-approved training material.
 
-Please read the following guidelines carefully
+Please read the following rules carefully. Legacy material that does not follow the rules is in the unsorted folder pending update.
 
 ## Rules
 
