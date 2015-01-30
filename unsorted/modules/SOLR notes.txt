@@ -1,0 +1,27 @@
+
+SOLR
+
+http://basho.com/write-it-like-riak-query-it-like-solr/
+http://docs.basho.com/riak/latest/dev/using/search/
+Open source - Apache v2
+Write It Like Riak, Query It Like Solr
+Distributed Solr sits on top of each Riak node, with Yokozuna (Riak Search) in between
+Connect a bucket (or bucket type) to a Solr index, then PUT objects into Riak as normal and within a second they will appear in the Solr query
+Schemas are needed to tell Solr what "type" each field in documents are, so that they can be indexed properly
+Default or custom schemas
+Extractors allow Riak objects to be treated as Solr documents
+Built-in extractors for standard types like plaintext, JSON, XML
+Or write your own custom extractors
+Language-specific analyzers, tokenizers, filters
+Majority of distributed Solr's features
+Automatic index repair via Riak's AAE
+Indexes can be manually deleted
+Results can be piped to Riak MapReduce
+Security: limit admin of schemas or indexes by user; limit querying by index
+
+YOKOZUNA
+Listens for KV changes and updates Solr indexes
+Translate queries so as not to overlap multiple replicas
+Coverage plan calculation - async update every few seconds
+Disseminate admin commands e.g. index creation
+Monitor the Solr instance (in fact, monitoring is bi-directional)
