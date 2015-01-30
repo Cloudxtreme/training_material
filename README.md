@@ -5,9 +5,9 @@ Basho Training Material
 
 The official repository for Basho-approved training material.
 
-Please read the following rules carefully. Legacy material that does not follow the rules is in the unsorted folder pending update.
+Please read the following guidelines carefully. Legacy material that does not follow the rules is in the unsorted folder pending update. This material may be used for training while there is no up-to-date alternative, but if you do present it please consider updating it yourself afterwards if you have time.
 
-## Rules
+## Guidelines
 
 ### Timing
 
@@ -20,8 +20,8 @@ Please read the following rules carefully. Legacy material that does not follow 
 
 + each module should include some practical element, e.g. demonstration, exercise
 + lab modules, focusing on longer exercises, are encouraged
-+ modules must be presentable, in a consistent fashion, by any knowledgeable person
-+ to guarantee this, every slide, demo and exercise must have:
++ modules should be presentable, in a consistent fashion, by any knowledgeable person
++ to this end, every slide, demo and exercise should have:
  + concise in-presentation speaker notes for use during presentations
  + extensive accompanying teaching notes for study before presentations, including full transcripts where possible
 
@@ -29,9 +29,9 @@ Please read the following rules carefully. Legacy material that does not follow 
 
 + every slide should serve a specific teaching purpose
 + pictures, diagrams, code or text should reinforce or demonstrate the concept being described
-+ slides should NOT contain the text that is spoken out loud (except titles)
++ slides should not contain the text that is spoken out loud (except titles)
 + modules may have prerequisites of other modules, but this should be kept to a minimum to allow trainers to pick and mix effectively
-+ a module may not be presented to customers unless it is:
++ a module should not be presented to customers unless it is:
  + retrieved from this training material repo
  + applicable to the product & version the training is targeted towards
  + reviewed for correctness within the last three months
@@ -39,14 +39,14 @@ Please read the following rules carefully. Legacy material that does not follow 
 ### Metadata & Review
 
 + metadata for all modules is stored in the Index file at the root of this repo
-+ a module may not be committed to this repo without the following metadata:
++ modules should not be committed to this repo without the following metadata:
  + Title
  + Units
  + Applicable Software Version(s)
  + Teaching Objectives
  + Prerequisites (or none if none)
  + Reviewed Correct and Current (by whom? when? for which version(s)?)
-+ a module may not be approved by a reviewer unless it:
++ a module should not be approved by a reviewer unless it:
  + meets all the above criteria
  + is factually correct
  + fulfills the stated teaching objectives
@@ -60,3 +60,8 @@ Please read the following rules carefully. Legacy material that does not follow 
  + 1.4/Bitcask_Backend
  + 2.0/Bitcask_Backend
  + etc.
+
+### Format
+
++ teaching notes should be in plaintext or markdown
++ slideshows should be in keynote, powerpoint, or markdown
