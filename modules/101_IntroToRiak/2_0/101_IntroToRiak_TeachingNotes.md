@@ -54,7 +54,7 @@ Also:
 
 ###distributed storage location
 
-+ in any system, one node can always fail
++ configurable level of redundancy to support node failures
 + in Riak, data is stored in clusters of nodes
 + each node sits on its own computer (or virtual machine)
 
@@ -84,11 +84,11 @@ This basic structure is the foundation of Riak. Next, we'll take a brief overvie
 + tune different clusters for different workloads to get ultra low-latency and efficient operation at enterprise scale
 
 ###sloppy quorum
-+ a secondary node is used for operations if a primary node is down
++ a fallback vnode is used for operations if a primary vnode is down
 + keeps your data highly available even under multi-node failure conditions
 
 ###hinted handoff
-+ hands partitions on secondaries back to primaries when they come back up
++ transfers partitions on fallbacks back to primaries when they come back up
 + makes the database self-heal, further improving fault tolerance
 
 ###ownership handoff
@@ -101,7 +101,7 @@ This basic structure is the foundation of Riak. Next, we'll take a brief overvie
 + makes setup & operation of complex environments much simpler
 
 ###conflict resolution
-+ let the application handle inconsistency externally, or adopt one of several internal resolution strategies
++ lets the application handle inconsistency externally, or adopt one of several internal resolution strategies
 + sliding scale between simplicity and power
 
 ###read repair (passive anti-entropy)
