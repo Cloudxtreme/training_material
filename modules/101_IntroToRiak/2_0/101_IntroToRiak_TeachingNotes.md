@@ -96,13 +96,37 @@ Also:
 	+ for our enterprise customers, full cluster failover
 
 ##Horizontal Scalability
-+ concurrent operations for a linear performance increase as you scale
++ means you can scale the performance of your database by adding more machines to the cluster
++ aka scaling out
++ vertical scaling means replacing slower computers with faster ones
++ aka scaling up
++ why do you want to scale?
+	+ because you want to grow... more customers, more compute power
++ why do you want to scale out instead of up?
+	+ super-computers are expensive
+	+ eventually computers don't get any faster
+	+ powerful machines are single points of failure
+	+ adding smaller machines more often results in less wasted compute power
+	+ you don't have to throw computers away
++ how does Riak scale?
+	+ performance increase improves linearly with more nodes
+	+ double your cluster size, get double the performance
+	+ works because any node can handle any request, so you benefit from concurrency
+	+ from an operational standpoint, adding nodes is a one-line operation
 
 ##Low Latency
-+ order of milliseconds
-+ one hop request routing
-+ split clusters and tune each one to optimize for each access pattern you support
- 
++ how long it takes one operation to complete
++ why is latency important?
+	+ some use-cases demand real-time response
+	+ lower latencies result in a more efficient, cheaper system overall
++ how fast is Riak?
+	+ order of milliseconds
++ how is this possible in a distributed system?
+	+ consistent hashing provides one hop request routing
+	+ choose your storage backend to suit your use-case:
+		+ Bitcask journals writes for fantastic write performance
+		+ LevelDB stores data in levels for quick access to frequently-requested data
+	+ with enterprise, you can split clusters and tune each one to optimize for individual access patterns separately 
 
 
 ---
