@@ -156,8 +156,9 @@ However, the technique has been developed by various authors over the past twent
 1. you input your key string into a consistent hash function
 2. the resulting **hash** is in the range 0 to 2^160
 3. you divide this range into partitions
-4. you PUT the data into the partition its hash falls within, plus the next N partitions walking clockwise around the ring
-5. partitions are owned by nodes according to a "claim" algorithm
+4. partitions are owned by nodes according to a "claim" algorithm such that each node has an equal number of partitions
+5. you PUT the data into the partition its hash falls within, plus the next N partitions along the range
+6. if you reach the last partition in the range, you wrap around to the first; this is why we call it the ring
 
 Actually, most of the cleverness is in claim. You can look at the source code:
 https://github.com/basho/riak_core/blob/develop/src/riak_core_claim.erl#L429
