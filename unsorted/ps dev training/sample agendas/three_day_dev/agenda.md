@@ -144,7 +144,7 @@
 * Session Storage
 * Shopping Cart / Product Data
 
-### Client Speicific Use-Case
+### Client Specific Use-Case
 
 * Access Patterns
 * Data Model
