@@ -4,11 +4,7 @@ https://indico.cern.ch/event/348657/overview
 *Notes*
 
 ---
-######OUTSTANDING ISSUES:
-+ needs review
 
-
-<br>
 
 ## Teaching Goals
 
@@ -47,6 +43,8 @@ Also:
 
 ##Operational Simplicity
 + Riak is the ops-friendly database
++ no need to get up in the middle of the night
++ Tapjoy just kept scaling... never created a headcount
 + why do I want an ops-friendly database?
 	+ the vast majority of the cost of a database is in operational support over its lifetime
 	+ the dangerous failures are the unexpected ones that only appear once the database is operating in a production environment
@@ -88,6 +86,7 @@ Also:
 + how is Riak fault tolerant?
 	+ written in Erlang, a programming language invented to support reliability (and was the foundation of the nine-nines uptime of the Ericsson AXD301 telecoms switch)
 	+ masterless ring permits operation with no single point of failure
+	+ no node is more important than any other
 	+ permanent node failure without data loss
 	+ self-healing thanks to hinted-handoff, conflict resolution, read-repair and active-anti-entropy
 	+ for our enterprise customers, full cluster failover
@@ -102,6 +101,7 @@ Also:
 + why do you want to scale out instead of up?
 	+ super-computers are expensive
 	+ eventually computers don't get any faster
+	+ Bet365 arrived at max capacity on SQL Server so they had to turn down new business
 	+ powerful machines are single points of failure
 	+ adding smaller machines more often results in less wasted compute power
 	+ you don't have to throw computers away
@@ -207,7 +207,7 @@ If you want to remain available even when there is a network partition, you must
 
 ## Solution: Conflict Resolution
 
-Whereby discrepancies and discovered and resolved according to some appropriate strategy, and in a way that does not compromise the latency or availability of the database. Let's look first at discovery.
+Whereby discrepancies are discovered and resolved according to some appropriate strategy, and in a way that does not compromise the latency or availability of the database. Let's look first at discovery.
 
 ### Discovery
 + you can do it on read, that's read repair
@@ -241,7 +241,7 @@ So the question now arises: once we discover inconsistency, how do we resolve an
 
 ### Resolution
 
-As with many things in life, there's a number of ways you can do it. Riak lets you pick from a variety of strategies.
+As with many things in life, there's a number of ways you can do it in the NoSQL world. Riak lets you pick from a variety of strategies.
 
 The simplest of these is by timestamp. Riak simply looks at when the value was last updated, according to the local clock of the node into which the object was put. It then overwrites all values on all nodes with the object with the latest clock value.
 
@@ -264,13 +264,26 @@ Here:
 + everything in {} is a causal context
 + v is the object value associated with the causal context
 
-The shorter causal context represents every event up to m. The longer represents every event up to m, and also event n.
+The shorter causal context represents every event up to m. The longer represents every event up to m, and also event n. These two notations are sufficient to make causal context clear in even the most complex of distributed interactions. We'll look at an example from the paper.
 
-Having a clear causal context permits Riak to do some intelligent resolution, but it updates happen on two different machines without shared causal history, further resolution is still required.
+...
+Permits you to know truly what is an ancestor of what.
 
-Riak now presents two options: either return siblings to the application for resolution at that level, or perform sibling resolution using provided knowledge of what type of data the current object represents.
+So, having a clear causal context permits Riak to do some intelligent resolution. However, if updates happen on two different machines without shared causal history, further resolution is still required.
 
-This is Riak's **Conflict-Free Replicated Data Type** (CRDT) functionality. Riak supports:
+Riak now presents two options: either return siblings to the application for resolution at that level, or perform sibling resolution at the database level using provided knowledge of what type of data the current object represents.
+
+This is Riak's **Conflict-Free Replicated Data Type** (CRDT) functionality.
+
+CRDTs are distributed data structures designed to provide strong eventual consistency. If implemented properly, they make merge conflicts mathematically impossible, thus guaranteeing the database tends towards a consistent state over time.
+
+CRDTs work when the type alone is sufficient knowledge for conflict resolution to occur. For the mathematicians among you, that is to say that the merge function must be commutative, associative, and idempotent. This is why only certain types can be modelled in this way.
+
++ commutative means the operands can be entered in any order and the result will be the same (e.g. minus doesn't work, plus does)
++ associative means the operations can be run in any order and the result will not change (divide doesn't work, multiply does)
++ idempotent... don't worry gentlemen, has nothing to do with potency... means the operation can be repeated multiple times without changing the result beyond the initial application
+
+Riak has the first implementation of CRDTs in a widely-used commercial database. It supports:
 
 + counters
 + sets
@@ -278,18 +291,25 @@ This is Riak's **Conflict-Free Replicated Data Type** (CRDT) functionality. Riak
 + flags
 + registers
 
-CRDTs work when the type alone is sufficient knowledge for conflict resolution to occur. For the mathematicians among you, that is to say that the merge function must be commutative, associative, and idempotent.
+Let's look at a brief example using sets.
 
-+ commutative means the operands can be entered in any order and the result will be the same
-+ associative means the operations can be run in any order and the result will not change
-+ idempotent means the operation can be repeated multiple times without changing the result beyond the initial application
+Consider modelling a public playlist as a set of track ids. Suppose two users concurrently alter the set, adding different tracks. In this case, the merge function is very simple: a set union operation gives us the correct result every time, which is to include both tracks.
 
-As an example, consider modelling a public playlist as a set of track ids. Now suppose two users concurrently add and remove the same track. What should we do?
+Now suppose a user removes a track while one replica is down. What happens now? A simple set union is clearly not sufficient for this situation... in fact, at first glance there appears to be no safe merge function. What we've created so far is called a "G-SET", or growth-only set.
 
-In the case of Riak's CRDT set, the rule is defined as "keep it". Everything else is a simple union operation. In this way, siblings need not be sent to the application, and application developers can be saved the hassle of writing complex application-specific conflict resolution code.
+To get a set that can also shrink, you have to model your CRDT set as two underlying sets: one for additions, the other for removals. The set seen by users is additions *minus* removals, which in proper maths terminology is *the relative complement of removals in additions*.
+
+When merging, you need to check the previous and new state of both sets. If there is a track newly listed in the removals set, but not in the additions set, that means you can safely remove that track from both lists.
+
+Now suppose two users concurrently add and remove the same track. What should we do? Well, here your implementation has to make a choice. Riak elects to believe that more things are better than less things with respect to CRDT sets. So the merge function leaves the track in the additions set, and removes it from the removals set. The result is that the track remains in the list from the user's perspective.
+
+So, that is a CRDT set. Counters are implemented in a similar way, using two growth-only counters. Registers are simple strings, and use last write wins resolution. Flags prefer to be on rather than off.
+
+Maps are compound objects containing other CRDTs within them, even other maps. Resolution is per sub-field, with the addition or removal of the fields themselves treated as with sets.
+
+And that's CRDTs. The advantage of using them is that siblings need not be sent to the application, and application developers can be saved the hassle of writing complex application-specific conflict resolution code for simple types and common use-cases (like playlists for example).
 
 If you want to learn more about CRDTs, an excellent reading list by one of my colleagues can be found here:
 http://christophermeiklejohn.com/crdt/2014/07/22/readings-in-crdts.html
 
-Questions!
-
+Okay, that was a brief look at a couple of non-trivial problems in distributed systems. Time for questions!
