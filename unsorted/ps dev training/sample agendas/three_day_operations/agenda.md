@@ -47,6 +47,28 @@
 * Ring
 * Hand-Offs
 
+### Intro to Riak Operations
+
+====================================
+
+* Installation
+* Controlling
+* Configuring
+* Clustering
+* Directories and what lives where
+
+### Intro to Riak Operations: Lab
+
+====================================
+
+* Demonstrate the following
+	* Bring up Riak nodes
+	* Join them into a cluster
+	* Perform Riak operations against the cluster
+	* Conduct a fault tolerance demo
+* Hands-On
+	* Repeat the demonstrated steps
+
 ### Riak 202A: Conflict and Resolution
 
 ====================================
@@ -73,28 +95,6 @@
 
 ## Day 2
 ====================================
-
-### Intro to Riak Operations
-
-====================================
-
-* Installation
-* Controlling
-* Configuring
-* Clustering
-* Directories and what lives where
-
-### Intro to Riak Operations: Lab
-
-====================================
-
-* Demonstrate the following
-	* Bring up Riak nodes
-	* Join them into a cluster
-	* Perform Riak operations against the cluster
-	* Conduct a fault tolerance demo
-* Hands-On
-	* Repeat the demonstrated steps
 
 ### Riak Architecture
 
@@ -127,9 +127,6 @@
 * Capacity Planning
 * Rolling Upgrades
 
-## Day 3
-====================================
-
 ### Backup, Restore, Disaster Recovery
 
 ====================================
@@ -138,6 +135,11 @@
 * Rolling Backups
 * Partial Cluster Failure Recovery
 * Disaster Recovery
+
+
+## Day 3
+====================================
+
 
 ### Performance Tuning
 
