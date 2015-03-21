@@ -8,9 +8,8 @@ Following is a loose agenda and goals for Basho Professional Services Use Case /
 
 * Introductions
 * Agenda review
-* Determine prior knowledge and experience with Riak
 * Annotate specific pain points with Riak and/or client level interactions with Riak
-* Discuss audience goals for the engagement
+* Prioritize on-site goals
   * Improve client application performance
   * Improve Riak cluster performance
   * Learn advanced datamodeling techniques
