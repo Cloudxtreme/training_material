@@ -54,12 +54,12 @@ Also:
 	+ the vast majority of the cost of a database is in operational support over its lifetime
 	+ the dangerous failures are the unexpected ones that only appear once the database is operating in a production environment
 + how easy is Riak to operate?
-	+ distributes your data for you
-	+ re-distributes your data for you when you scale
-	+ replicates your data for you locally and globally
-	+ resolves your data for you if it is changed concurrently
-	+ repairs your data for you if it gets out of sync or corrupted
-	+ holds and returns your data for you no matter how many nodes go down
+	+ distributes your data for you using Consistent Hashing
+	+ re-distributes your data for you when you scale, in a balanced way
+	+ replicates your data for you locally, and globally using Multi-Datacenter Replication
+	+ resolves your data for you if it is changed concurrently using logical clocks and other means
+	+ repairs your data for you if it gets out of sync or corrupted using Read Repair and Active Anti-Entropy
+	+ holds and returns your data for you no matter how many nodes go down thanks to Sloppy Quorum
 	+ AND...
 	+ up-to-the-minute stats
 	+ rolling-restarts for upgrading
@@ -81,7 +81,7 @@ Also:
 		+ heavy load
 		+ multiple node failure
 		+ network partitions
-	+ Riak also supports global availability for enterprise customers via our Multi-DataCenter Replication technology
+	+ Riak also supports global availability for enterprise customers via MDC
 
 
 ##Fault Tolerance
@@ -94,21 +94,17 @@ Also:
 	+ masterless ring permits operation with no single point of failure
 	+ permanent node failure without data loss
 	+ self-healing thanks to hinted-handoff, conflict resolution, read-repair and active-anti-entropy
-	+ for our enterprise customers, full cluster failover
+	+ if you use MDC, you can even do full cluster failover
 
 ##Horizontal Scalability
-+ means you can scale the performance of your database by adding more machines to the cluster
-+ aka scaling out
-+ vertical scaling means replacing slower computers with faster ones
-+ aka scaling up
++ means you can scale the performance of your database by adding more machines to the cluster, instead of replacing slower machines with faster ones
++ aka scaling out, instead of scaling up
 + why do you want to scale?
 	+ because you want to grow... more customers, more compute power
 + why do you want to scale out instead of up?
-	+ super-computers are expensive
-	+ eventually computers don't get any faster
+	+ using smaller machines results in less wasted compute power
 	+ powerful machines are single points of failure
-	+ adding smaller machines more often results in less wasted compute power
-	+ you don't have to throw computers away
+	+ eventually computers don't get any faster
 + how does Riak scale?
 	+ performance increase improves linearly with more nodes
 	+ double your cluster size, get double the performance
@@ -116,18 +112,19 @@ Also:
 	+ from an operational standpoint, adding nodes is a one-line operation
 
 ##Low Latency
-+ how long it takes one operation to complete
++ this is how long it takes one operation to complete
 + why is latency important?
 	+ some use-cases demand real-time response
 	+ lower latencies result in a more efficient, cheaper system overall
 + how fast is Riak?
 	+ order of milliseconds
 + how is this possible in a distributed system?
-	+ consistent hashing provides one hop request routing
+	+ consistent hashing provides one hop request routing from the coordinator to the target node, resulting in a total of two hops up and two down
+	+ you can configure your R-val to be less than 3, so that coordinators don't wait for all three responses before returning the value
 	+ choose your storage backend to suit your use-case:
 		+ Bitcask journals writes for fantastic write performance
 		+ LevelDB stores data in levels for quick access to frequently-requested data
-	+ with enterprise, you can split clusters and tune each one to optimize for individual access patterns separately 
+	+ with MDC, you can split clusters and tune each one to optimize for individual access patterns separately
 
 
 ---
