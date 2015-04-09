@@ -1,0 +1,199 @@
+# Multi Data Center
+
+---
+
+# MDC Terms
+
+^Source - producer of replication data. Sink - consumer of replication data. Cluster Manager - EE service providing node and protocol info. Fullsync coordinator - Node responsible for fullsync between source & sink. Leader Election - Process to determine fullsync coordinator (only on leader startup failure). Fullsync - Comparison of key list from source and sink (on the source) before differences are pushed to sink. Realtime - Successful requests on the source are queued and then sent to the sink. Realtime Queue - Per node queue of requests to send to sink. 
+
+---
+
+# MDC Terms
+
+* Source Cluster - Producer of replication data
+* Sink Cluster - Consumer of replication data
+* Cluster Manager - Enterprise Edition service providing node and protocol info
+* Fullsync Coordinator - Node responsible for fullsync between source & sink
+* Leader Election - Process to determine fullsync coordinator
+
+---
+
+# MDC Terms
+
+* Fullsync Replication - Per partition synchronisation from source to sink
+* Realtime Replication - Per node replication of requests on source to sink
+* Realtime Queue - per node queue of requests to send to sink
+
+---
+
+# Fullsync
+
+^Connection established between fullsync coordinators. Source and sink perform a keylisting exercise. Sink sends keylist to source for comparison. Source cluster streams new objects to sink. The ‘request’ is not copied (only the object) so deletes are not replicated. Fullsync multiplexes connections from partition owner to partition owner through a single TCP connection. Keylist and/or AAE. 
+
+---
+
+# Realtime
+
+^Before a source cluster can begin pushing realtime updates to a sink, the following commands must be issued: 1. riak-repl realtime enable <sink_cluster> After this command, the realtime queues (one for each Riak node) are populated with updates to the source cluster, ready to be pushed to the sink. 2. riak-repl realtime start <sink_cluster> This instructs the Riak connection manager to contact the sink cluster. 
+
+---
+
+# Realtime
+
+^3. Nodes with queued updates establish connections to the sink cluster and replication begins. 
+
+---
+
+# Realtime
+
+^4. The client sends an object to store on the source cluster. 5. Riak writes N replicas on the source cluster. 
+
+---
+
+# Realtime
+
+^6. The new object is stored in the realtime queue. 7. The object is copied to the sink cluster. 
+
+---
+
+# Realtime
+
+^8. The destination node on the sink cluster writes the object to N nodes.
+ 
+
+---
+
+# Realtime
+
+^9. The successful write of the object to the sink cluster is acknowledged and the object removed from the realtime queue. 
+
+---
+
+# Connecting Clusters
+
+* # name each cluster $ riak-repl clustername Cluster1
+* # connect to Cluster Manager port on Sink $ riak-repl connect <sink_ip>:<port>
+* # check one way connection is active $ riak-repl connections
+* # (connect in other direction)
+
+---
+
+# Repl Commands
+
+* $ riak-repl clustername <localname> 
+* $ riak-repl modes <modelist>
+* $ riak-repl connect <host:port> 
+* $ riak-repl disconnect {<host:port> | clustername} 
+* $ riak-repl connections 
+* $ riak-repl realtime enable <clustername> 
+* $ riak-repl realtime disable <clustername> 
+* $ riak-repl realtime start <clustername> 
+* $ riak-repl realtime stop <clustername> 
+* $ riak-repl fullsync enable <clustername> 
+* $ riak-repl fullsync disable <clustername> 
+* $ riak-repl fullsync start <clustername> 
+* $ riak-repl fullsync stop <clustername> 
+* $ riak-repl fullsync max_fssource_node <value> 
+* $ riak-repl fullsync max_fssource_cluster <value> 
+* $ riak-repl fullsync max_fssink_node <value>
+
+---
+
+# Realtime Queue
+
+* $ riak-repl status | grep -A7 realtime_queue
+* realtime_queue_stats: [{bytes,720},
+*                        {max_bytes,104857600},
+*                        {consumers,[{"c2",
+*                                     [{pending,0},
+*                                      {unacked,0},
+*                                      {drops,0},
+*                                      {errs,0}]}]},
+*                        {overload_drops,0}]
+
+^Per node queue with a configurable size rtq_max_bytes. 
+
+---
+
+# Repl Configuration
+
+* {riak_core, [
+*     %% Every *node* runs one cluster_mgr.
+*     {cluster_mgr, {"0.0.0.0", 9080 }}
+*     …
+* ]},
+* {riak_repl, [
+*     % Pick the correct data_root for your platform
+*     % Debian/Centos/RHEL:
+*     {data_root, "/var/lib/riak/data/riak_repl"},
+*     % Solaris:
+*     % {data_root, "/opt/riak/data/riak_repl"},
+*     % FreeBSD/SmartOS:
+*     % {data_root, "/var/db/riak/riak_repl"},
+*     {max_fssource_cluster, 5},
+*     {max_fssource_node, 2},
+*     {max_fssink_node, 2},
+*     {fullsync_on_connect, false}
+* ]}
+
+---
+
+# Fullsync Configuration
+
+* max_fssource_cluster
+* max_fssource_node
+* max_fssink_node
+
+---
+
+# Realtime Configuration
+
+* rtq_max_bytes (104857600 / 100MB)
+* rt_heartbeat_interval (15 secs)
+* rt_heartbeat_timeout (15 secs)
+
+^The maximum size to which the realtime replication queue can grow before new objects are dropped. A heartbeat message is sent from the source to the sink every rt_heartbeat_interval seconds. If a heartbeat response is not received in rt_heartbeat_timeout seconds, then the source connection exits and will be re-established. 
+
+---
+
+# Fullsync Configuration
+
+* %% fullsync_on_connect defaults to true
+* {riak_repl, [
+*     {fullsync_on_connect, false}
+* ]}
+* %% fullsync_interval {riak_repl, [     {data_root, "/configured/repl/data/root"},     {fullsync_interval, 90} %% fullsync runs every 90 minutes ]}
+* %% fullsync_interval (multiple)
+* {riak_repl, [     {data_root, "/configured/repl/data/root"},     {fullsync_interval, [         {"sink_boston", 120},         {"sink_newyork", 90} ]}
+
+---
+
+# Fullsync Logging
+
+* @riak_repl2_fscoordinator_sup:start_coord:24 Starting replication coordination "c2"
+* @riak_repl_util:start_fullsync_timer:608 Fullsync for "c2" scheduled in 360 minutes
+* @riak_core_connection:try_ssl:208 "c1" and "c2" agreed to not use SSL
+* @riak_repl2_fscoordinator:handle_cast:260 fullsync coordinator connected to "c2"
+
+---
+
+# Use Cases
+
+* Fullsync for regular backup to single node / smaller cluster
+* Fullsync to catch up busy realtime or network connectivity issues
+* Realtime and Fullsync for cluster mirroring
+
+---
+
+# Repl Per Bucket
+
+* Per bucket repl in bucket props
+* true (default)
+* both (same as true)
+* realtime
+* fullsync
+* false
+
+---
+
+
