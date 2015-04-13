@@ -27,7 +27,7 @@ The riak object is the core unit of storage in riak. The riak object consists of
 + there are several ways to GET that same blob of data back later on, but the fastest and simplest way is to tell Riak what the identifier is
 + in its simplest form, the identifier consists of a unique string of characters which is called the **key**
 + optionally, the identifier can also include a bucket and bucket-type; if you do not supply these Riak assumes you wish to use the default bucket and bucket-type
-+ we'll talk more about buckets and bucket-types later on in this presentation
++ we'll talk more about buckets and bucket-types in a minute
 
 ###Causal-Context
 + causal-context is an opaque term that represents the distributed update history of the object
