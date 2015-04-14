@@ -55,12 +55,12 @@ identifier: employee_1
 
 As discussed previously, riak object identifiers may include the name of the bucket to which the object belongs, and the bucket-type of that bucket. But what is a bucket in riak?
 
-+ buckets are logical groupings of riak objects; they allow a group of objects to share many of riak's configuration settings
 + buckets are NOT physical groupings of objects on machines
 + buckets are NOT tables of objects that share the same schema; riak doesn't have schema
-+ some elements of buckets are defined at the bucket-type level; each bucket belongs to exactly one bucket-type (the default one if none is specified)
-+ buckets and bucket-types form part of the object identifier, along with the key
-+ two different objects are permitted to share the same key if either their bucket or bucket-type are different
++ buckets are logical groupings of riak objects; they allow constituent objects to share many of riak's configuration settings
++ most configuration properties can be defined at either the bucket or bucket-type level; using the bucket-type level is more performant and so preferred
++ as we know, buckets and bucket-types form part of the object identifier, along with the key
++ this means that two different objects are permitted to share the same key if either their bucket or bucket-type are different
 + therefore, buckets *can* be used as namespaces, but this is not their raison d'être; namespaces can just as easily be included in the key, for example: "employees-00127"
 
 <br>
