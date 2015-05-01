@@ -27,8 +27,8 @@
 		+ maybe they are sitting in your office
 		+ maybe they are in the cloud
 		+ maybe they are virtual machines
-		+ doesn't matter!
-	+ lets you store & retrieve information
+		+ it doesn't matter where the computers are!
+	+ what matters is, a database lets you store & retrieve information
 	+ effectively & efficiently for your use-case
 + there are lots of databases out there... so what's special about Riak?
 
@@ -52,7 +52,9 @@ Also:
 + Riak is the ops-friendly database
 + why do I want an ops-friendly database?
 	+ the vast majority of the cost of a database is in operational support over its lifetime
+	+ imagine developing and running a database is like sailing
 	+ the dangerous failures are the unexpected ones that only appear once the database is operating in a production environment
+	+ this is why you need operational simplicity
 + how easy is Riak to operate?
 	+ distributes your data for you using Consistent Hashing
 	+ re-distributes your data for you when you scale, in a balanced way
@@ -126,5 +128,7 @@ Also:
 		+ LevelDB stores data in levels for quick access to frequently-requested data
 	+ with MDC, you can split clusters and tune each one to optimize for individual access patterns separately
 
++ we’ve now covered Riak’s five core story points in brief
++ in future presentations, we will explore Riak's features in more depth
 
 ---
