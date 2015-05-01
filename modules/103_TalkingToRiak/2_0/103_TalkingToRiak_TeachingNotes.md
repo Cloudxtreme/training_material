@@ -5,6 +5,9 @@
 ######OUTSTANDING ISSUES:
 
 + very basic
++ some examples of http usage would be good
++ maybe also some examples of client code
++ a PUT in all supported clients?
 
 <br>
 
