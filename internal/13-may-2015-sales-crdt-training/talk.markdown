@@ -129,6 +129,14 @@ Are CRDT unique to Riak ?
 
 ---
 
+# A *_necessary_* feature ?
+
+Vector clocks/CRDT are unnecessary?
+
+^we hear competitors claiming that CRDTs aren't needed - how can they make these claims? ie if you don't have CRDT how can you cope without- thinking either push resolution to client, default to LWW or maybe rearchitect your application to avoid conflict
+
+---
+
 # Conflict Resolution
 
 ^ when does server side conflict resolution matter? with what type of data, what type of workload?
@@ -141,15 +149,6 @@ Are CRDT unique to Riak ?
 
 ---
 
-# Unnecessary feature ?
-
----
-
-Vector clocks/CRDT are unnecessary?
-
-^we hear competitors claiming that CRDTs aren't needed - how can they make these claims? ie if you don't have CRDT how can you cope without- thinking either push resolution to client, default to LWW or maybe rearchitect your application to avoid conflict
-
----
 
 # Immutable data
 
