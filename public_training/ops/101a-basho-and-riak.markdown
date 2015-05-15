@@ -1,159 +1,256 @@
-# Core Concepts
+# Basho & Riak
 
 ---
 
-# Value
+# Basho
 
-^Opaque binary representation of data stored against a key. 
-
----
-
-# Key
-
-^An identifier for a value. 
+^Who are basho? The creators and developers of Riak & Riak CS. Founded in 2008 by ex-Akamai staff. Experts in distributed systems. Offices across the USA, EMEA & Japan. Providing Professional Services, Customer Support. 
 
 ---
 
-# Metadata
+# Riak
 
-^Additional data linked to the KV pair that is not part of the value. 
-
----
-
-# Bucket
-
-^Logical grouping of KV pairs, allowing a customisable shared configuration to apply. 
+^What is Riak? At it’s heart Riak is a fast, reliable, distributed and highly available key-value store. Inspired by Amazon Dynamo white paper. Written in Erlang with come C/C++. Open Source. Apache 2.0 licensed. 
 
 ---
 
-# Riak Object
+# What is Riak?
 
-^The combination of Bucket, Key, Value and Metadata. The unit of replication in Riak. 
-
----
-
-# Node
-
-^An Erlang VM running an instance of Riak. Best practice is a single Erlang VM per OS instance. 
+^Your application stores its data (values) against unique keys (bucket and key combination). When you want to access a particular value, you request it with the bucket/key combination and Riak serves it back to the client. 
 
 ---
 
-# Cluster
+# KV with extras
 
-^A collection of connected Riak nodes. 
-
----
-
-# Key/Hash Space
-
-^To decide where data is persisted to disk in the cluster we use a Cryptographic SHA-1 hash from 0 - 2^160. Any bucket and key combination is hashed and this points to a location in this key/hash space. 
-
----
-
-# Partition
-
-^Divisions of the key space are available as directories on the cluster based on available disk space. This is known as the ring creation size. Must be a 2 power: 8, 16, 32, 64, 128 etc. 
+* Secondary indexing (2i)
+* Data expiry (TTL)
+* Search
+* Map Reduce
+* Commit hooks
+* HTTP and PB interfaces
 
 ---
 
-# Partition Distribution
-
-^We then assign the individual partitions to servers/nodes within the cluster so they each have an equal number and therefore manage an equal division of the key/hash space. 
-
----
-
-# Replication
-
-^Default n_val (N) of 3. Replication to the next N-1 partitions. 
+# riak is the
+ops-friendly
+database
 
 ---
 
-# 
-
-^What happens when you write to the final partition though? 
-
----
-
-# Consistent Hashing
-
-^Cryptographic SHA-1 hash from 0 - 2^160. Dynamo paper is recommended reading. 
+# cluster of nodes
+DISTRIBUTED
+performance through concurrency
 
 ---
 
-# <ring diagram>
+# all nodes participate equally
+MASTERLESS
+no single point of failure
 
 ---
 
-# Replication
-
-user_records/dbrown  
-
-^Default n_val (N) of 3. Replication to the next N-1 partitions. 
+# easily add or remove nodes
+SCALABLE
+linear scalability
 
 ---
 
-# Handoff
-
-* Ownership handoff
-* Hinted handoff
-
-^Signed for parcel being delivered to one house (node), occupants are vnodes. Hinted - postman delivers to a neighbour while you are out. When you return the neighbour hands it to you. Ownership - Children move out and get mail sent to their new address (mail split between more addresses) 
+# MULTIPLE PLATFORMS
 
 ---
 
-# Hinted Handoff
+# replicas of stored data
+HIGHLY AVAILABLE
+redundancy
 
 ---
 
-# 
-
-^Replica (n_val) is configurable with a default of 3. 
-
----
-
-# 
-
-^When a server fails, Riak automatically accepts writes to fallback vnodes on different physical nodes ensuring data safety. Existing data is repaired through read-repair and AAE. Read repair ensures replicas are consistent on each read request. AAE works as a background process performing the same consistency checking automatically. 
+# erlang core
+FAULT TOLERANT
+self healing
 
 ---
 
-# 
+# Riak strengths
 
-^Once the failed node has been repaired/recovered back in to the cluster, hinted handoff happens automatically to rebalance data distribution. 
-
----
-
-# Ownership Handoff
+^Fast - KV operations are low latency with minimal disk seeks. Scalable - Add nodes to get more CPU/mem/disk/IOPS. Concurrent - Erlang OTP gives you concurrency through multiple processes supporting multiple operations. Available - Any nodes accepts reads/writes. Fault tolerant - Erlang OTP gives you process hierarchy and crash support. The cluster transparently survives node crashes. 
 
 ---
 
-# Replication
+# Riak Strengths
+
+* Fast - KV operations are low latency with minimal disk seeks.
+* Scalable - Add nodes to get more CPU/mem/disk/IOPS.
+* Concurrent - Erlang OTP gives you concurrency through multiple processes supporting multiple operations.
+* Available - Any nodes accepts reads/writes.
+* Fault tolerant - Erlang OTP gives you process hierarchy and crash support. The cluster transparently survives node crashes.
 
 ---
 
-# Vnode
+# Riak is not an RDBMS
 
-^Erlang process handling requests and managing a partition. A vnode is a virtual node, as opposed to physical node. Each vnode is responsible for one partition on the ring. A vnode is an Erlang process. A vnode is the unit of concurrency, replication, and fault tolerance. Typically many vnodes will run on each physical node. 
-
----
-
-# Vector Clocks & Siblings
-
-^If Riak is configured with allow_mult = true it uses Vector clocks to establish causality of actions. This helps Riak resolve conflicts where it can and provide multiple copies of objects back to the client for resolution where divergent copies result in no causal relationship. 
+^Does not manage complex object relationships. Does not manage complex queries. Does not support atomic operations across keys. 
 
 ---
 
-# Quorum
-
-^The set of nodes required to participate in a transaction. At most, the same as the configured number of replicas of the data being stored. 
+# Why use Riak?
 
 ---
 
-# Request Quorums
+# For Operators
 
-* Every request contacts all replicas of key
-* N - number of replicas (default 3)
-* R - read quorum
-* W -  write quorum
+* What’s important as an operator?
+* Simplicity 
+* Fault Tolerance
+* High-availability
+* Monitoring
+* Excellent support (Community & Enterprise)
+
+---
+
+# Simplicity
+
+* Ease of configuration
+* Management & Troubleshooting
+* Rolling upgrades
+* Provisioning
+* Horizontally scalable
+* Commodity hardware
+
+^Configuration > 2 files to setup - app.config for Riak, vm.args for Erlang. Management & troubleshooting > command-line tools, riak-debug, logs. Provisioning > support for Puppet, Chef, Ansible etc. Horizontally scalable > designed to be clustered. Add more nodes to get more iops/storage/compute as load is distributed evenly. Scaling a relational database to handle more data and usage can be prohibitively expensive for operators. Horizontal scaling is easier and usually cheaper than vertical scaling. 
+
+---
+
+# Fault Tolerance
+
+* All nodes participate equally - no single point of failure (SPOF)
+* All data is replicated
+* Cluster transparently survives...
+* Node failure
+* Network partitions
+* Built on Erlang/OTP
+
+^Cluster transparently survives node failure and network partitions. Masterless with no SPOF. All data is replicated to multiple nodes. 
+
+---
+
+# High Availability
+
+* Masterless
+* Tunable availability/consistency
+* Fallbacks are used when nodes are down
+* Hinted-handoff
+* Ownership-handoff
+
+^Masterless architecture. Tunable availability if required. Fallbacks are used when nodes are down. Hinted handoff. Rolling restarts and live upgrades. MDC - discussed later. Relational Databases tend to favour consistency over availability, making them ill suited for applications that require high availability. 
+
+---
+
+# CAP Theorem
+
+* C = Consistency
+* A = Availability
+* P = Partition Tolerance
+* Cap theorem states that a distributed shared data system can at most support 2 out of these 3 properties
+
+Network/Data Partition
+
+^- Riak sacrifices C, eventually consistent - tunable consistency 
+
+---
+
+# Monitoring
+
+* Nagios plugin
+* Command line - riak-admin
+* HTTP - /stats
+* Enterprise
+* JMX
+* SNMP
+
+^riak-admin status and /stats endpoint give a wealth of information on Riak health and activity. Nagios plugin available. Zabbix template available. Use your favourite monitoring tool. 
+
+---
+
+# Support
+
+* Open Source
+* Community
+* Mailing list
+* IRC
+* docs.basho.com - For Operators
+* Enterprise
+* Telephone, Email & 24x7x365 On-Call Support
+
+---
+
+# For Developers
+
+* What’s important as a developer?
+* Simplicity
+* Supported languages
+* Feature set
+* Performance
+* Excellent support (community & enterprise)
+
+---
+
+# Simplicity
+
+* Simple to spike (Five-minute install)
+* No data normalisation
+* No need to design for sharding/scaling
+* Supported client libraries
+
+---
+
+# Client Libraries 
+
+* Client libraries supported by Basho: Python, Ruby, Java, Erlang (PB)
+* Community supported languages and frameworks: C/C++, Clojure, Common Lisp, Dart, Django, Go, Grails, Griffon, Groovy, Erlang, Haskell, .NET, Node.js, OCaml, Perl, PHP, Play, Racket, Scala, Smalltalk
+
+^Erlang using protocol buffers instead of distributed Erlang. 
+
+---
+
+# Client Types
+
+* REST based HTTP Interface Easy to use from command line (curl) and simple scripts.
+* Protocol Buffers Optimized binary encoding standard developed by Google. More efficient and faster than HTTP interface.
+
+---
+
+# Features
+
+* Read-repair
+* Active Anti Entropy
+* Tunable availability/consistency
+* Conflict Resolution
+* Multiple storage backends with specific features
+* Map Reduce
+* Replication in Riak EE MDC
+
+^Tunable consistency per bucket Backend specific features (expiry, indexing) 
+
+---
+
+# Performance
+
+* Near linear performance increase when scaling
+* Perfect for high IOPS requirements
+* Perfect for heavy write scenarios due to masterless architecture
+
+---
+
+# Support
+
+* Community
+* Mailing list
+* IRC
+* docs.basho.com - For Developers
+* Relational to Riak white paper
+* Enterprise access to Engineering
+
+---
 
 
