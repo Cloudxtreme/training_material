@@ -5,11 +5,16 @@ slidenumbers: true
 
 # CRDT Brainstorming Session
 
-![fit inline](basho-logo-color-horiz.png)
+![left inline](basho-logo-color-horiz.png)
 
 ---
 
-# An example 
+# What is a CRDT ?
+
+^ A data structure, copies of which can be modified concurrently on multiple systems, then automatically merged together to form a final result
+---
+
+# An example..
 
 ![left filtered](hugs.png)
 
@@ -23,6 +28,12 @@ slidenumbers: true
 
 ---
 
+### A Brief History of Time in Riak - Sean Cribbs, Basho
+What is a version vector ?
+
+![inline](https://www.youtube.com/watch?v=3SWSw3mKApM&t=590)
+
+---
 
 # Which CRDT <br/> do we implement?
 
@@ -30,10 +41,7 @@ slidenumbers: true
 
 # Counters
 
-Can be used alone or as part of a map.
-
-Keeps track of increments/decrements.
-Default value is 1 or -1, but configure to any integer value.
+Can be used alone or as part of a map. Keeps track of increments/decrements. Default value is 1 or -1, but can be set to any integer value.
 
 * Page likes
 * Number of Twitter followers
@@ -53,7 +61,7 @@ Supported operations are add/remove 1 element and add/remove multiple elements.
 
 ---
 
-# Flags
+# Flags (booleans)
 
 Must be used as part of a map; cannot be used alone.
 
@@ -64,20 +72,19 @@ Values limited to enable or disable.
 
 ---
 
-# Registers
+# Registers (strings)
 
-Must be used as part of a map; cannot be used alone.
-Named binary, with values of any binary.  The value may change over time.
+Must be used as part of a map, or set; cannot be used alone. The value may change over time.
 
-* Storing the name Beaker in the register first\_name in the map favorite\_muppets
-* Storing the place Timbuktu in the register cities in the map hottest\_places
+* Store the name Beaker in the register first\_name\_register in the Map favorite\_muppets
+* Store the place Timbuktu in the Set hottest\_places
 
 ---
 
-# Maps
+# Maps (associative arrays)
 
 Supports nesting any of the data types, including maps.
-Operations including adding/removing map fields and performing operations on nested types (e.g. decrement a counter value). 
+Operations include adding/removing map fields and performing operations on nested types (e.g. decrement a counter value). 
 
 E.g. a map called user\_profile containing: 
 
