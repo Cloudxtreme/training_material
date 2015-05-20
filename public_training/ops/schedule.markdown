@@ -1,13 +1,44 @@
 autoscale: true 
-build-lists: true
+build-lists: false
 footer: © Basho, 2015
 slidenumbers: true
 
 ![fit](design-assets/Basho-Logos/eps/basho-logo-color-horiz.eps)
 
+^Welcome to Basho for this Riak Operations Training
+
+^Introduce presenters.
+
 ---
 
-# Riak Operations <br/> Training Schedule
+# Practicalities
+
+^Safety - Fire escapes, First Aid, Toilets, Refreshments, Smoking
+
+^Wireless 
+
+^Swag
+
+^Questions/interruptions welcome -- this is the first public course so we'd really appreciate feedback (& will indeed ask for it at the end)
+
+---
+
+# Objectives
+
+- deploy and tune a Riak cluster
+- identify a monitoring strategy
+- identify and respond to common problem scenarios
+- set up backups and multi-datacenter replication
+
+^Mention feedback again -- we'll ask if they felt we achieved these things
+
+---
+
+# Introductions
+
+^Possible icebreaker: pair for 2 minutes, introduce your neighbour, something silly (favourite food or drink) and what they most want out of this training
+
+^May need to adjust objectives to accommodate, so possibly re-show that slide
 
 ---
 
