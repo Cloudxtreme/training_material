@@ -9,16 +9,16 @@ slidenumbers: true
 
 # Basho Bench
 
-![left fit](./design-assets/Bashomen/png/diagnose.png)
-
-* performance and stress testing
+# performance and stress testing
 
 ---
 
 # Basho Bench
 
+![left fit](./design-assets/Bashomen/png/diagnose.png)
+
 * A simple, yet powerful tool created to conduct reliable performance & stress tests, accompanied by
-* beautiful R graphs.
+* Beautiful R graphs.
 
 
 
@@ -54,19 +54,36 @@ slidenumbers: true
 
 # Installing
 
-* Erlang
-* $ wget http://erlang.org/download/otp_src_R15B01.tar.gz
-* $ tar zxvf otp_src_R15B01.tar.gz
-* $ cd otp_src_R15B01
-* $ ./configure && make && sudo make install
-* Basho Bench
-* $ git clone git://github.com/basho/basho_bench.git
-* $ cd basho_bench
-* $ make all
-* R
-* $ wget http://cran.r-project.org/src/base/R-3/R-3.0.2.tar.gz
-* $ cd R-3.0.2
-* $ ./configure && make && sudo make install
+---
+
+# Erlang
+
+```bash
+wget http://erlang.org/download/otp_src_R15B01.tar.gz
+tar zxvf otp_src_R15B01.tar.gz
+cd otp_src_R15B01
+./configure && make && sudo make install
+```
+
+---
+
+# Basho Bench
+
+```bash
+git clone git://github.com/basho/basho_bench.git
+cd basho_bench
+make all
+```
+
+---
+
+# R
+
+```
+wget http://cran.r-project.org/src/base/R-3/R-3.0.2.tar.gz
+cd R-3.0.2
+./configure && make && sudo make install
+```
 
 ---
 
@@ -79,29 +96,43 @@ slidenumbers: true
 
 # Configuring 2/2
 
-* run at max, i.e.: as quickly as possible: {mode, max} 
-* run 15 operations per second per worker: {mode, {rate, 15}}
-* run 10 concurrent processes:{concurrent, 10}
-* run the test for one hour: {duration, 60}
-* run 80% GETs, 20% PUTs: {operations, [{get, 4}, {put, 1}]}
-* generate a fixed size, random binary of 512 bytes {value_generator, {fixed_bin, 512}}
-* use a randomly selected integer between 1 and 10,000: {key_generator, {uniform_int, 10000}}
+* Run at max, i.e.: as quickly as possible: `{mode, max}`
+* Run 15 operations per second per worker: `{mode, {rate, 15}}`
+* Run 10 concurrent processes: `{concurrent, 10}`
+* Run the test for one hour: `{duration, 60}`
+* Run 80% GETs, 20% PUTs: `{operations, [{get, 4}, {put, 1}]}`
+* Generate a fixed size, random binary of 512 bytes:
+`{value_generator, {fixed_bin, 512}}`
+* Use a randomly selected integer between 1 and 10,000: 
+`{key_generator, {uniform_int, 10000}}`
 
 ---
 
 # Running
 
-* $ cd basho_bench
-* $ ./basho_bench example/riakc_pb.config
-* or
-* $ ./basho_bench example/bitcask.config
-* or
-* $ ./basho_bench my-PeTe-scenario.config
-* $ make results
+```
+cd basho_bench
+./basho_bench example/riakc_pb.config
+```
+
+Or
+
+```
+./basho_bench example/bitcask.config
+```
+
+Or
+
+```
+./basho_bench my-PeTe-scenario.config
+make results
+```
 
 ---
 
 # Analysing
+
+![left fit](./205-basho-bench//summary.png) 
 
 * BB+R will write its output files under ./tests/current/
 * *_latencies.csv
@@ -116,5 +147,4 @@ slidenumbers: true
 * http://github.com/basho/basho_bench/
 * http://www.erlang.org
 * http://www.r-project.org
-
 
