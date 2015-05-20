@@ -1,3 +1,8 @@
+autoscale: true
+build-lists: true
+footer: © Basho, 2015
+slidenumbers: true
+
 # Failure Scenarios
 
 ---

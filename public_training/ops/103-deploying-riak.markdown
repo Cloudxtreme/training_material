@@ -1,3 +1,13 @@
+autoscale: true
+build-lists: true
+footer: © Basho, 2015
+slidenumbers: true
+
+![fit](design-assets/Basho-Logos/eps/basho-logo-color-horiz.eps)
+
+---
+
+
 # Deploying Riak
 
 ---

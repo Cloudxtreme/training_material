@@ -1,14 +1,19 @@
-# Basho & Riak
+autoscale: true
+build-lists: true
+footer: © Basho, 2015
+slidenumbers: true
+
+![fit](design-assets/Basho-Logos/eps/basho-logo-color-horiz.eps)
 
 ---
 
-# Basho
+# About Basho
 
 ^Who are basho? The creators and developers of Riak & Riak CS. Founded in 2008 by ex-Akamai staff. Experts in distributed systems. Offices across the USA, EMEA & Japan. Providing Professional Services, Customer Support. 
 
 ---
 
-# Riak
+# About Riak
 
 ^What is Riak? At it’s heart Riak is a fast, reliable, distributed and highly available key-value store. Inspired by Amazon Dynamo white paper. Written in Erlang with come C/C++. Open Source. Apache 2.0 licensed. 
 
@@ -31,27 +36,26 @@
 
 ---
 
-# riak is the
-ops-friendly
-database
+# Riak is the
+
+# ops-friendly<br/>database
 
 ---
 
-# cluster of nodes
-DISTRIBUTED
-performance through concurrency
+# Cluster of nodes
+
+#DISTRIBUTED<br/>Performance through concurrency
 
 ---
 
-# all nodes participate equally
-MASTERLESS
-no single point of failure
+# All nodes participate equally
+
+#MASTERLESS<br/>No single point of failure
 
 ---
 
 # easily add or remove nodes
-SCALABLE
-linear scalability
+#SCALABLE<br/>linear scalability
 
 ---
 
@@ -60,14 +64,13 @@ linear scalability
 ---
 
 # replicas of stored data
-HIGHLY AVAILABLE
-redundancy
+
+#HIGHLY AVAILABLE<br/>data redundancy
 
 ---
 
 # erlang core
-FAULT TOLERANT
-self healing
+#FAULT TOLERANT<br/>self healing
 
 ---
 
@@ -84,6 +87,13 @@ self healing
 * Concurrent - Erlang OTP gives you concurrency through multiple processes supporting multiple operations.
 * Available - Any nodes accepts reads/writes.
 * Fault tolerant - Erlang OTP gives you process hierarchy and crash support. The cluster transparently survives node crashes.
+
+^Fast - KV operations are low latency with minimal disk seeks.
+^Scalable - Add nodes to get more CPU/mem/disk/IOPS.
+^Concurrent - Erlang OTP gives you concurrency through multiple processes supporting multiple operations.
+^Available - Any nodes accepts reads/writes.
+^Fault tolerant - Erlang OTP gives you process hierarchy and crash support. The cluster transparently survives node crashes.
+
 
 ---
 

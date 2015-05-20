@@ -1,6 +1,7 @@
-
-
----
+autoscale: true
+build-lists: true
+footer: © Basho, 2015
+slidenumbers: true
 
 # Performance Tuning
 
