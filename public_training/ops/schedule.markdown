@@ -25,10 +25,10 @@ slidenumbers: true
 
 # Objectives
 
-- deploy and tune a Riak cluster
-- identify a monitoring strategy
-- identify and respond to common problem scenarios
-- set up backups and multi-datacenter replication
+- Deploy and tune a Riak cluster
+- Identify a monitoring strategy
+- Identify and respond to common problem scenarios
+- Set up backups and multi-datacenter replication
 
 ^Mention feedback again -- we'll ask if they felt we achieved these things
 

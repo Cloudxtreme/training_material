@@ -21,14 +21,24 @@ slidenumbers: true
 
 ---
 
-# Backend config
+# Backend config (1.4)
 
-* %% Riak KV config
-*  {riak_kv, [
-*             %% Storage_backend specifies the Erlang 
-*             %% module defining the storage mechanism
-*             %% that will be used on this node.
-*             {storage_backend, riak_kv_bitcask_backend},
+```
+ %% Riak KV config
+  {riak_kv, [
+             %% Storage_backend specifies the Erlang 
+             %% module defining the storage mechanism
+             %% that will be used on this node.
+             {storage_backend, riak_kv_bitcask_backend},
+```
+
+---
+
+# Backend config (2.x)
+
+```
+storage_backend = leveldb
+```
 
 ---
 
@@ -133,21 +143,40 @@ slidenumbers: true
 
 ---
 
-# Multi-backend config
+# Multi-backend config (1.4)
 
-* {storage_backend, riak_kv_multi_backend},
-* {multi_backend_default, <<"bitcask_be">>},
-* {multi_backend, [
-*                  {<<"bitcask_be">>, riak_kv_bitcask_backend, [
-*                      {data_root, "/var/lib/riak/bitcask"}
-*                  ]},
-*                  {<<"leveldb_be">>, riak_kv_eleveldb_backend, [
-*                      {data_root, "/var/lib/riak/leveldb"}
-*                  ]},
-*                  {<<"memory_be">>, riak_kv_memory_backend, [
-*                      {max_memory, 512}, %% in megabytes
-*                  ]}
-* ]},
+```
+{storage_backend, riak_kv_multi_backend},
+{multi_backend_default, <<"bitcask_be">>},
+{multi_backend, [
+                 {<<"bitcask_be">>, riak_kv_bitcask_backend, [
+                     {data_root, "/var/lib/riak/bitcask"}
+                 ]},
+                 {<<"leveldb_be">>, riak_kv_eleveldb_backend, [
+                     {data_root, "/var/lib/riak/leveldb"}
+                 ]},
+                 {<<"memory_be">>, riak_kv_memory_backend, [
+                     {max_memory, 512}, %% in megabytes
+                 ]}
+]},
+```
+
+---
+
+# Multi-backend config (2.x)
+
+```
+storage_backend = multi
+
+multi_backend.bitcask_mult.storage_backend = bitcask
+multi_backend.bitcask_mult.bitcask.data_root = /var/lib/riak/bitcask_mult
+
+multi_backend.leveldb_mult.storage_backend = leveldb
+multi_backend.leveldb_mult.leveldb.data_root = /var/lib/riak/leveldb_mult
+
+multi_backend.default = bitcask_mult
+
+```
 
 ---
 

@@ -51,15 +51,21 @@ slidenumbers: true
 
 ^In this example the Web, App and Database layers can all scale independently. The LB layers could be the same hardware/software and handles App requests and Database requests in different ‘pools’ or groups. 
 
+![inline fit](./103-deploying-riak/example-arch-1.png)
+
 ---
 
 # Example Architecture 2
+
+![inline fit](./103-deploying-riak/example-arch-2.png)
 
 ^In this scenario the application layer is inexpensive in terms of resource requirements and is tied to Riak in terms of availability. If the App or Riak becomes unavailable on the server, the load balancer layer must remove it. 
 
 ---
 
 # Production Checklist
+
+![inline fit](./103-deploying-riak/production-checklist.png)
 
 ^Provided by Basho Check the doc in the riak-ops repo 
 

@@ -7,7 +7,6 @@ slidenumbers: true
 
 ---
 
-
 # Capacity & Scaling
 
 ---
@@ -50,6 +49,8 @@ slidenumbers: true
 
 # Bottlenecks
 
+![inline fit](./107-capacity-and-scaling/bottlenecks.png)
+
 ---
 
 # Estimating Disk Capacity
@@ -65,9 +66,9 @@ slidenumbers: true
 
 ---
 
-# ring_creation_size
+# `ring_creation_size`
 
-* Can only be set once
+* Can only be set once (2.x can be increased)
 * Power of 2
 * All nodes must agree
 * 10-30 vnodes per node is considered best

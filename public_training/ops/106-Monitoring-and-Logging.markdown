@@ -7,7 +7,6 @@ slidenumbers: true
 
 ---
 
-
 # Monitoring
 
 ^If it moves, watch it. 
@@ -68,11 +67,15 @@ slidenumbers: true
 
 # Riak Metrics
 
+![inline fit](./106-monitoring-and-logging//riak-metrics-1.png)
+
 ^Trend things over time 
 
 ---
 
 # Riak Metrics
+
+![inline fit](./106-monitoring-and-logging//riak-metrics-2.png)
 
 ^Stack certain graphs to get a clearer picture 
 
@@ -91,6 +94,8 @@ slidenumbers: true
 ---
 
 # System Metrics
+
+![inline fit](./106-monitoring-and-logging//system-metrics.png)
 
 ^Trends help you spot issues 
 
