@@ -3,7 +3,15 @@ build-lists: true
 footer: © Basho, 2015
 slidenumbers: true
 
-![fit](design-assets/Basho-Logos/eps/basho-logo-color-horiz.eps)
+![inline](design-assets/Riak-Product-Logos/eps/riak-logo-color.eps)
+
+---
+
+![inline](design-assets/Basho-Logos/eps/basho-logo-color-horiz.eps)
+
+---
+
+# Basho & Riak
 
 ---
 
@@ -20,6 +28,9 @@ slidenumbers: true
 ---
 
 # What is Riak?
+
+
+![inline fit](./101a-basho-and-riak/what-is-riak.png)
 
 ^Your application stores its data (values) against unique keys (bucket and key combination). When you want to access a particular value, you request it with the bucket/key combination and Riak serves it back to the client. 
 
@@ -57,9 +68,13 @@ slidenumbers: true
 # easily add or remove nodes
 #SCALABLE<br/>linear scalability
 
+
+
 ---
 
 # MULTIPLE PLATFORMS
+
+![inline fit](./101a-basho-and-riak/platforms.png)
 
 ---
 
@@ -165,6 +180,8 @@ slidenumbers: true
 
 Network/Data Partition
 
+![fit left](./101a-basho-and-riak/network-partition.png)
+
 ^- Riak sacrifices C, eventually consistent - tunable consistency 
 
 ---
@@ -262,5 +279,7 @@ Network/Data Partition
 * Enterprise access to Engineering
 
 ---
+
+# Questions ?
 
 

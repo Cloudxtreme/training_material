@@ -3,6 +3,11 @@ build-lists: true
 footer: © Basho, 2015
 slidenumbers: true
 
+
+![fit](design-assets/Riak-Product-Logos/eps/basho-logo-color-horiz.eps)
+
+---
+
 ![fit](design-assets/Basho-Logos/eps/basho-logo-color-horiz.eps)
 
 ---
@@ -604,7 +609,6 @@ consistent_get_time_95 : 0
 # TCP/IP 
 
 ```
-
 net.ipv4.tcp_max_syn_backlog = 40000 
 net.core.somaxconn=4000 
 net.ipv4.tcp_timestamps = 0 
@@ -613,31 +617,30 @@ net.ipv4.tcp_window_scaling = 1 
 net.ipv4.tcp_fin_timeout = 15 
 net.ipv4.tcp_keepalive_intvl = 30 
 net.ipv4.tcp_tw_reuse = 1
-
 ```
 
-Lets examine these settings one at a time
-
-^ _
+^ Lets examine these settings one at a time
 
 ---
 
 
 # `tcp_max_syn_backlog`
 
->> Keeps more SYN requests in memory.  Helps moderate the effect of a large number of connections at peak times. 
+* Keeps more SYN requests in memory.  
+
+* Helps moderate the effect of a large number of connections at peak times. 
 
 ---
 
 # `net.core.somaxconn`
 
->> Increases the max TCP sockets in a LISTEN state 
+* Increases the max TCP sockets in a LISTEN state 
 
 ---
 
 # `tcp_timestamps` 
 
-We’ve seen performance benefits while disabling this option on networks less than 10GbE.
+* We’ve seen performance benefits while disabling this option on networks less than 10GbE.
 
 ^ This should be enabled on 10GbE networks. 
 
@@ -645,25 +648,31 @@ We’ve seen performance benefits while disabling this option on networks less t
 
 # `tcp_sack` 
 
-Enables selective ACKs.  Helps reduce the amount of data sent during retransmits. 
+* Enables selective ACKs.  
+* Helps to reduce the amount of data sent during retransmits. 
 
 ---
 
 # `tcp_window_scaling`
 
-Enables window scaling.  Reduces bandwidth loss on high bandwidth connections. 
+* Enables window scaling.  
+* Reduces bandwidth loss on high bandwidth connections. 
 
 ---
 
 # `tcp_fin_timeout` 
 
-How long to keep sockets in the `FIN_WAIT_2` status.  Default: 60.  Decreasing helps reap closed connections faster. 
+* How long to keep sockets in the `FIN_WAIT_2` status.  
+* Default: 60.  
+* Decreasing helps reap closed connections faster. 
 
 ---
 
 # `tcp_keepalive_intvl`
 
-The interval between sending keepalive probes.  Default: 75.  Decreasing allows failed connections to be closed sooner. 
+* The interval between sending keepalive probes.  
+* Default: 75.  
+* Decreasing allows failed connections to be closed sooner. 
 
 ---
 
