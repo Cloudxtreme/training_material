@@ -26,11 +26,11 @@ slidenumbers: true
 
 # Installing 
 
-Installation [script](http://bit.ly/1IQaLLX) for Centos 6.5
+Installation [script](http://bit.ly/1AfXHOM) for Centos 6.5
 
 ```
 
-curl -L http://bit.ly/1IQaLLX > out.txt
+curl -L http://bit.ly/1AfXHOM > out.txt
 source out.txt
 ```
 
