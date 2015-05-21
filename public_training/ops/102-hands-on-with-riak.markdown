@@ -34,7 +34,8 @@ curl -L http://bit.ly/1IQaLLX > out.txt
 source out.txt
 ```
 
-^devnodes parameter 
+^ devnodes parameter 
+^ centos 6.5 (ami-c3af3fb4)
 
 ---
 
