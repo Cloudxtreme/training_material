@@ -4,11 +4,11 @@ footer: © Basho, 2015
 slidenumbers: true
 
 
-![fit](design-assets/Riak-Product-Logos/eps/basho-logo-color-horiz.eps)
+![fit inline](./design-assets/Riak-Product-Logos/eps/riak-logo-color.eps)
 
 ---
 
-![fit](design-assets/Basho-Logos/eps/basho-logo-color-horiz.eps)
+![fit inline](design-assets/Basho-Logos/eps/basho-logo-color-horiz.eps)
 
 ---
 
