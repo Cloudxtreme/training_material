@@ -34,4 +34,7 @@ slidenumbers: true
 
 ^Node maintenance Ring configuration 
 
+---
+
+# Workshop.. lets break stuff
 

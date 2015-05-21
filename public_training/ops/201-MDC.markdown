@@ -7,12 +7,15 @@ slidenumbers: true
 
 ---
 
-
 # Multi Data Center
 
 ---
 
 # MDC Terms
+
+![inline fit](./201-MDC/mdc-terms.png)
+
+
 
 ^Source - producer of replication data. Sink - consumer of replication data. Cluster Manager - EE service providing node and protocol info. Fullsync coordinator - Node responsible for fullsync between source & sink. Leader Election - Process to determine fullsync coordinator (only on leader startup failure). Fullsync - Comparison of key list from source and sink (on the source) before differences are pushed to sink. Realtime - Successful requests on the source are queued and then sent to the sink. Realtime Queue - Per node queue of requests to send to sink. 
 
@@ -38,11 +41,15 @@ slidenumbers: true
 
 # Fullsync
 
+![inline fit](./201-MDC/fullsync.png)
+
 ^Connection established between fullsync coordinators. Source and sink perform a keylisting exercise. Sink sends keylist to source for comparison. Source cluster streams new objects to sink. The ‘request’ is not copied (only the object) so deletes are not replicated. Fullsync multiplexes connections from partition owner to partition owner through a single TCP connection. Keylist and/or AAE. 
 
 ---
 
 # Realtime
+
+![inline fit](./201-MDC/realtime-1.png)
 
 ^Before a source cluster can begin pushing realtime updates to a sink, the following commands must be issued: 1. riak-repl realtime enable <sink_cluster> After this command, the realtime queues (one for each Riak node) are populated with updates to the source cluster, ready to be pushed to the sink. 2. riak-repl realtime start <sink_cluster> This instructs the Riak connection manager to contact the sink cluster. 
 
@@ -50,11 +57,15 @@ slidenumbers: true
 
 # Realtime
 
+![inline fit](./201-MDC/realtime-2.png)
+
 ^3. Nodes with queued updates establish connections to the sink cluster and replication begins. 
 
 ---
 
 # Realtime
+
+![inline fit](./201-MDC/realtime-3.png)
 
 ^4. The client sends an object to store on the source cluster. 5. Riak writes N replicas on the source cluster. 
 
@@ -62,18 +73,23 @@ slidenumbers: true
 
 # Realtime
 
+![inline fit](./201-MDC/realtime-5.png)
+
 ^6. The new object is stored in the realtime queue. 7. The object is copied to the sink cluster. 
 
 ---
 
 # Realtime
 
+![inline fit](./201-MDC/realtime-6.png)
+
 ^8. The destination node on the sink cluster writes the object to N nodes.
- 
 
 ---
 
 # Realtime
+
+![inline fit](./201-MDC/realtime-7.png)
 
 ^9. The successful write of the object to the sink cluster is acknowledged and the object removed from the realtime queue. 
 

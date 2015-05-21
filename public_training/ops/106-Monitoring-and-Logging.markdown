@@ -13,8 +13,6 @@ slidenumbers: true
 
 ---
 
-# Monitoring
-
 * Riak Health
 * Riak Metrics
 * System Metrics
@@ -35,34 +33,37 @@ slidenumbers: true
 
 # Riak Health
 
-* riak@node:~$ riak-admin ring_status
-* =========================== Claimant =============================
-* Claimant:  ‘riak@node.example.com’
-* Status:     up
-* Ring Ready: true
-* ======================= Ownership Handoff ========================
-* No pending changes.
-* ======================= Unreachable Nodes ========================
-* All nodes are up and reachable
+```
+riak@node:~$ riak-admin ring_status
+=========================== Claimant =============================
+Claimant:  ‘riak@node.example.com’
+Status:     up
+Ring Ready: true
+======================= Ownership Handoff ========================
+No pending changes.
+======================= Unreachable Nodes ========================
+All nodes are up and reachable
+```
 
 ---
 
 # Riak Metrics
 
-* riak@node:~$ riak-admin status
-* 1-minute stats for ‘riak@node.example.com’
-* -------------------------------------------
-* riak_kv_stat_ts : 1396505566
-* vnode_gets : 87324
-* vnode_gets_total : 12387621
-* vnode_puts : 13572
-* vnode_puts_total : 1625343
-* vnode_index_refreshes : 1278
-* vnode_index_refreshes_total : 18726
-* vnode_index_reads : 9826421
-* vnode_index_reads_total : 347214
+```
+riak@node:~$ riak-admin status
+1-minute stats for ‘riak@node.example.com’
+-------------------------------------------
+riak_kv_stat_ts : 1396505566
+vnode_gets : 87324
+vnode_gets_total : 12387621
+vnode_puts : 13572
+vnode_puts_total : 1625343
+vnode_index_refreshes : 1278
+vnode_index_refreshes_total : 18726
+vnode_index_reads : 9826421
+vnode_index_reads_total : 347214
 * …
-
+```
 ---
 
 # Riak Metrics
@@ -132,19 +133,53 @@ slidenumbers: true
 
 ---
 
-# Logging Configuration
+# Logging Configuration (1.4)
 
-* {lager, [    {handlers, [        {lager_file_backend, [           {"/var/log/riak/error.log", error, 10485760, "$D0", 5},           {"/var/log/riak/console.log", info, 10485760, "$D0", 5}        ]},        {lager_syslog_backend, ["riak", daemon, info]}    ]},
+```
+{lager, [    
+    {handlers, [        
+    {lager_file_backend, [           
+        {"/var/log/riak/error.log", error, 10485760, "$D0", 5},
+        {"/var/log/riak/console.log", info, 10485760, "$D0", 5}
+    ]},        
+    {lager_syslog_backend, ["riak", daemon, info]}    ]},
+```
 
 ---
 
-# Logging Configuration
+# Logging Configuration (1.4)
 
-* {crash_log, "/var/log/riak/crash.log"},
-* {crash_log_msg_size, 65536},
-* {crash_log_size, 10485760},
-* {crash_log_date, "$D0"},
-* {crash_log_count, 5},
+```
+{crash_log, "/var/log/riak/crash.log"},
+{crash_log_msg_size, 65536},
+{crash_log_size, 10485760},
+{crash_log_date, "$D0"},
+{crash_log_count, 5},
+```
+
+---
+
+# Logging Configuration (2.x)
+
+```
+log.crash = on
+log.crash.file = $(platform_log_dir)/crash.log
+log.crash.maximum_message_size = 64KB
+log.crash.rotation = $D0
+log.crash.rotation.keep = 5
+log.crash.size = 10MB
+erlang.crash_dump = ./log/erl_crash.dump
+log.console = both
+log.console.file = $(platform_log_dir)/console.log
+log.console.level = info
+log.error.file = $(platform_log_dir)/error.log
+log.error.messages_per_second = 100
+log.error.redirect = on
+log.syslog = off
+log.syslog.facility = daemon
+log.syslog.ident = riak
+log.syslog.level = info
+```
 
 ---
 
@@ -159,25 +194,28 @@ slidenumbers: true
 
 # Common Error Messages
 
-* Erlang
-* long_gc
-* busy_dist_port
-* emfile
-* {error, e____}
+Erlang
+* `long_gc`
+* `busy_dist_port`
+* `emfile`
+* `{error, e____}`
 * Posix errors: http://erldocs.com/R15B/kernel/inet.html
 
-^Long_gc - use less memory, or increase the memory settings in your app.config Busy_dist_port - erlang buffers are full; increase zdbbl setting in vm.args Too many db tables Emfile - hit the ulimit 
+^Long_gc - use less memory, or increase the memory settings in your app.config 
+^Busy_dist_port - erlang buffers are full; increase zdbbl setting in vm.args 
+^Too many db tables 
+^Emfile - hit the ulimit 
 
 ---
 
 # Erlang Errors
 
-* {error,duplicate_name}
-* {error,econnrefused} / {error,ehostunreach}
-* {error,eacces}
-* {error,enoent}
-* {error,erofs}
-* system_memory_high_watermark
+* `{error,duplicate_name}`
+* `{error,econnrefused} / {error,ehostunreach}`
+* `{error,eacces}`
+* `{error,enoent}`
+* `{error,erofs}`
+* `system_memory_high_watermark`
 
 ^{error,duplicate_name} - duplicate name already running / multiple nodes on same machine with same vm.args -name value / Riak is already running, check for beam.smp. / epmd thinks Riak is running, check/kill epmd {error,econnrefused} / {error,ehostunreach} - Ensure your cluster is up and nodes are able to communicate with each other (check connections and setcookie etc) {error,eacces} - Ensure the riak beam process has permission to write to all *_dir values in app.config, for example, ring_state_dir, platform_data_dir, and others. {error,enoent} - Missing an expected file or directory - check app.config *_dir {error,erofs} - A file/directory is attempted to be written to a read-only filesystem System_memory_high_watermark- Often a sign than an ETS table has grown too large - is vnode count reasonable ? (measured in dozens per node rather than hundreds). 
 
