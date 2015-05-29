@@ -26,7 +26,11 @@ slidenumbers: true
 
 # Installing 
 
-Installation [script](http://bit.ly/1AfXHOM) for Centos 6.5
+```
+sudo yum -y install wget
+```
+
+Installation [script http://bit.ly/1G24sGk](http://bit.ly/1G24sGk) for Centos 6.5
 
 ```
 

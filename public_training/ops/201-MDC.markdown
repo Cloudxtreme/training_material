@@ -111,10 +111,16 @@ slidenumbers: true
 * $ riak-repl connect <host:port> 
 * $ riak-repl disconnect {<host:port> | clustername} 
 * $ riak-repl connections 
+
+---
+
 * $ riak-repl realtime enable <clustername> 
 * $ riak-repl realtime disable <clustername> 
 * $ riak-repl realtime start <clustername> 
 * $ riak-repl realtime stop <clustername> 
+
+---
+
 * $ riak-repl fullsync enable <clustername> 
 * $ riak-repl fullsync disable <clustername> 
 * $ riak-repl fullsync start <clustername> 
@@ -143,40 +149,43 @@ slidenumbers: true
 
 # Repl Configuration
 
-* {riak_core, [
-*     %% Every *node* runs one cluster_mgr.
-*     {cluster_mgr, {"0.0.0.0", 9080 }}
-*     …
-* ]},
-* {riak_repl, [
-*     % Pick the correct data_root for your platform
-*     % Debian/Centos/RHEL:
-*     {data_root, "/var/lib/riak/data/riak_repl"},
-*     % Solaris:
-*     % {data_root, "/opt/riak/data/riak_repl"},
-*     % FreeBSD/SmartOS:
-*     % {data_root, "/var/db/riak/riak_repl"},
-*     {max_fssource_cluster, 5},
-*     {max_fssource_node, 2},
-*     {max_fssink_node, 2},
-*     {fullsync_on_connect, false}
-* ]}
+```
 
+ {riak_core, [
+     %% Every *node* runs one cluster_mgr.
+     {cluster_mgr, {"0.0.0.0", 9080 }}
+     …
+ ]},
+ {riak_repl, [
+     % Pick the correct data_root for your platform
+     % Debian/Centos/RHEL:
+     {data_root, "/var/lib/riak/data/riak_repl"},
+     % Solaris:
+     % {data_root, "/opt/riak/data/riak_repl"},
+     % FreeBSD/SmartOS:
+     % {data_root, "/var/db/riak/riak_repl"},
+     {max_fssource_cluster, 5},
+     {max_fssource_node, 2},
+     {max_fssink_node, 2},
+     {fullsync_on_connect, false}
+ ]}
+
+```
 ---
 
 # Fullsync Configuration
 
-* max_fssource_cluster
-* max_fssource_node
-* max_fssink_node
+* `max_fssource_cluster`
+* `max_fssource_node`
+* `max_fssink_node`
 
 ---
 
 # Realtime Configuration
 
-* rtq_max_bytes (104857600 / 100MB)
-* rt_heartbeat_interval (15 secs)
-* rt_heartbeat_timeout (15 secs)
+* `rtq_max_bytes` (104857600 / 100MB)
+* `rt_heartbeat_interval` (15 secs)
+* `rt_heartbeat_timeout` (15 secs)
 
 ^The maximum size to which the realtime replication queue can grow before new objects are dropped. A heartbeat message is sent from the source to the sink every rt_heartbeat_interval seconds. If a heartbeat response is not received in rt_heartbeat_timeout seconds, then the source connection exits and will be re-established. 
 
@@ -184,23 +193,25 @@ slidenumbers: true
 
 # Fullsync Configuration
 
-* %% fullsync_on_connect defaults to true
-* {riak_repl, [
-*     {fullsync_on_connect, false}
-* ]}
-* %% fullsync_interval {riak_repl, [     {data_root, "/configured/repl/data/root"},     {fullsync_interval, 90} %% fullsync runs every 90 minutes ]}
-* %% fullsync_interval (multiple)
-* {riak_repl, [     {data_root, "/configured/repl/data/root"},     {fullsync_interval, [         {"sink_boston", 120},         {"sink_newyork", 90} ]}
-
+```
+ %% fullsync_on_connect defaults to true
+ {riak_repl, [
+     {fullsync_on_connect, false}
+ ]}
+ %% fullsync_interval {riak_repl, [     {data_root, "/configured/repl/data/root"},     {fullsync_interval, 90} %% fullsync runs every 90 minutes ]}
+ %% fullsync_interval (multiple)
+ {riak_repl, [     {data_root, "/configured/repl/data/root"},     {fullsync_interval, [         {"sink_boston", 120},         {"sink_newyork", 90} ]}
+```
 ---
 
 # Fullsync Logging
 
-* @riak_repl2_fscoordinator_sup:start_coord:24 Starting replication coordination "c2"
-* @riak_repl_util:start_fullsync_timer:608 Fullsync for "c2" scheduled in 360 minutes
-* @riak_core_connection:try_ssl:208 "c1" and "c2" agreed to not use SSL
-* @riak_repl2_fscoordinator:handle_cast:260 fullsync coordinator connected to "c2"
-
+```
+@riak_repl2_fscoordinator_sup:start_coord:24 Starting replication coordination "c2"
+@riak_repl_util:start_fullsync_timer:608 Fullsync for "c2" scheduled in 360 minutes
+@riak_core_connection:try_ssl:208 "c1" and "c2" agreed to not use SSL
+@riak_repl2_fscoordinator:handle_cast:260 fullsync coordinator connected to "c2"
+```
 ---
 
 # Use Cases
