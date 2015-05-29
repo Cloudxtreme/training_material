@@ -11,16 +11,27 @@ slidenumbers: true
 
 # Overview 
 
-* Objectives 
-* Prerequisites
-* Quick overview of steps involved
+
 
 ---
 
 
+# Objectives
+
+
+
+---
+
+# Prerequisites
+
+* Machine with 8GB RAM (and most of that free)
+* A 'devrel' installation of Riak 2.1+ with 3 available nodes
+
+---
+
 # Global Variables
 
-## Set a variable defining the Riak hostname.
+Set a variable defining the Riak hostname and HTTP port number
 
 ```
 export RIAK=localhost:10018
@@ -28,83 +39,98 @@ export RIAK=localhost:10018
 
 ---
 
-
 ## Perform some cleanup (part 1)!
 
-```
-for i in `seq 1 6`
-    do ./dev$i/bin/riak stop 
-done
-
-for i in `seq 1 2`
-    do 
-    rm -rf ./dev$i/data
-    ./dev$i/bin/riak start
-done
-
-./dev1/bin/riak-admin cluster join dev2@127.0.0.1
-./dev1/bin/riak-admin cluster plan
-./dev1/bin/riak-admin cluster commit
-sleep 5
-
-#TODO: FIX THIS MATCH !!!!
-while $(./dev1/bin/riak-admin transfers | egrep "(waiting)" ); do echo waiting; sleep 1; done 
-
-
+    for i in 1 2 3
+        do ./dev$i/bin/riak stop 
+        rm -rf ./dev$i/data
+    done
 
 ---
 
-### Perform some cleanup (part 2)!
+### Perform some setup 
 
-```
-for i in `seq 1 6`; 
-    do rm -rf \
-    dev$i/data/anti_entropy dev$i/data/ring dev$i/data/bitcask \
-    dev$i/data/cluster_meta dev$i/data/generated.configs \
-    dev$i/data/kv_vnode dev$i/data/riak_kv_exchange_fsm \
-    dev$i/data/riak_repl dev$i/data/yz dev$i/data/yz_anti_entropy ;
-done
-```
+    vi ./dev[123]/etc/riak.conf
+
+    search = on
+    anti_entropy = active
+    anti_entropy.concurrency_limit = 2
+    anti_entropy.tree.build_limit.number = 2
+    anti_entropy.tree.build_limit.per_timespan = 1h
 
 ---
 
-### Perform some cleanup (part 3)!
+# Join up a fresh cluster
 
->>> Not done yet! In dev$i/etc/riak.conf ...
+    for i in 1 2 3
+        do ./dev$i/bin/riak start
+    done
 
-```
-vi ./dev[12]/etc/riak.conf
-```
-
-```  
-     search = on
-     anti_entropy = active
-     anti_entropy.concurrency_limit = 2
-     anti_entropy.tree.build_limit.number = 2
-     anti_entropy.tree.build_limit.per_timespan = 1h
-```
+    ./dev1/bin/riak-admin cluster join dev2@127.0.0.1
+    ./dev2/bin/riak-admin cluster join dev3@127.0.0.1
+    ./dev3/bin/riak-admin cluster join dev1@127.0.0.1
+    ./dev1/bin/riak-admin cluster plan
+    ./dev1/bin/riak-admin cluster commit
 
 ---
 
-### And finally, I'm working on a very slow machine, or perhaps it's this version..
+
+### When running on a slow machine...
 
 ```
      WAIT_FOR_ERLANG=120 ./dev1/bin/riak start
 ```
 
+
+^ And finally, I'm working on a very slow machine, or perhaps it's this version..
+
 ---
 
 
-# Examine the default schema  
+# Examine and edit the default schema  
 
 ```
-    curl $RIAK/search/schema/_yz_default \
-    > default.schema.xml
+    curl $RIAK/search/schema/_yz_default > default.schema.xml
     vim default.schema.xml
 ```
+
+---
+# What's in the (schema) file (1) ?
+
+```xml
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema name="default" version="1.5">
+ <fields>
+   <field name="_version_" type="long" indexed="true"
+    stored="true"/>
+   <field name="text" type="text_general" indexed="true" 
+    stored="false" multiValued="true"/>
+   <dynamicField name="*_i"  type="int"
+    indexed="true"  stored="true"  multiValued="false"/>
+   ...
+``` 
+
 ---
 
-# Create a new schema named `example_schema`
+# What's in the (schema) file (2) ?
+
+```xml
+
+
+<!-- languages -->
+ <dynamicField name="*_en" type="text_en" 
+    indexed="true" stored="true" multiValued="true"/>
+ <dynamicField name="*_ar" type="text_ar" 
+    indexed="true" stored="true" multiValued="true"/>
+ <dynamicField name="*_bg" type="text_bg" 
+    indexed="true" stored="true" multiValued="true"/>
+
+```
+---
+
+
+# Upload a new schema named `example_schema`
 
 ```
     curl -XPUT \
@@ -115,7 +141,7 @@ vi ./dev[12]/etc/riak.conf
 
 ---
 
-# Associate `example_schema` with a new index, `example_index`
+# Associate `example_schema` with a new index - `example_index`
 
 ```
     curl -XPUT \
@@ -129,7 +155,7 @@ vi ./dev[12]/etc/riak.conf
 # List existing bucket-types 
 
 ```
-    dev1/bin/riak-admin bucket-type list
+riak-admin bucket-type list
 ```
 
 ---
@@ -137,8 +163,8 @@ vi ./dev[12]/etc/riak.conf
 # Create a bucket-type to hold map Riak Data Types
 
 ```
-    dev1/bin/riak-admin bucket-type create maps \
-    '{"props":
+dev1/bin/riak-admin bucket-type create maps '
+    {"props":
         {"datatype":"map", "search_index":"example_index" }
     }'
 ```
@@ -148,38 +174,41 @@ vi ./dev[12]/etc/riak.conf
 # Activate the maps bucket-type
 
 ```
-    dev1/bin/riak-admin bucket-type activate maps
+riak-admin bucket-type activate maps
 ```
 
 ---
 
-## POST a Riak CRDT update into the bucket-type
+## POST a Riak CRDT update 
 
-```
-    curl -X POST $RIAK/types/maps/buckets/fooz/datatypes/baz \
-    -H"content-type: application/json" \
-    -d '
-    {
-       "update" : {
-          "blah_counter" : 1,
-          "foo_set" : {
-             "add_all" : [
-                "1"
-             ]
-          },
-          "stone_counter" : 50,
-          "gold_counter" : 100
-       }
-    }'
+```bash
+
+curl -X POST "$RIAK/types/maps/buckets/users/datatypes/binarytemple" \
+-H "content-type: application/json" \
+-d '
+{
+   "update" : {
+      "blah_counter" : 1,
+      "foo_set" : {
+         "add_all" : [
+            "1"
+         ]
+      },
+      "stone_counter" : 50,
+      "gold_counter" : 100
+   }
+}'
 ```
 
 ---
 
-## Search for every field in the Yokozuna index (wildcard)
+## Search for the key 'binarytemple' 
 
 ```
-    curl 'http://$RIAK/search/query/example_index?q=_yz_rk:"baz"'
+curl "http://$RIAK/search/query/example_index?q=_yz_rk:\"binarytemple\""
 ```
+
+^ `_yz_rk` is the indexed field used to index riak objects
 
 ---
 
