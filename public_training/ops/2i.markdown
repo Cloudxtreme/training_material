@@ -1,0 +1,87 @@
+
+---
+
+```
+curl -XPUT \
+-H "x-riak-index-age_bin: 25" \
+-H "Content-Type: application/json" \
+-d '{"name": "Anthony J Dacosta"}' \
+http://127.0.0.1:10018/buckets/users/keys/anthony
+```
+---
+
+
+
+
+
+(dev1@127.0.0.1)1> {ok, C} = riak:local_client().
+{ok,{riak_client,'dev1@127.0.0.1',undefined}}
+(dev1@127.0.0.1)2> C:get_index( <<"users">>, {eq, <<"age_bin">> }, 25 }).
+* 1: syntax error before: '}'
+(dev1@127.0.0.1)2> C:get_index( <<"users">>, {eq, <<"age_bin">> , 25 }).
+{ok,[]}
+(dev1@127.0.0.1)3>
+(dev1@127.0.0.1)3> C:get_index( <<"users">>, {eq, <<"age">> , 25 }).
+{ok,[]}
+(dev1@127.0.0.1)4> C:get_index( <<"users">>, {range, <<"age_bin">> , [0,25] }).
+{error,timeout}
+(dev1@127.0.0.1)5> C:get_index( <<"users">>, {eq, <<"age">> , 25 }).
+{ok,[]}
+(dev1@127.0.0.1)6>
+(dev1@127.0.0.1)6> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 }).
+{ok,[<<"anthony">>]}
+(dev1@127.0.0.1)7>
+
+
+[~%]curl -XPUT -H "x-riak-index-age_int: 25" -H "Content-Type: application/json" -d '{"name": "Anthony J Dacosta"}' http://127.0.0.1:10018/buckets/users/keys/anthony
+[~%]
+[~%]curl http://127.0.0.1:10018/buckets/users/index/age_int/25
+{"keys":["anthony"]}%
+
+[~%]curl http://127.0.0.1:10018/buckets/users/index/age_int/0,25
+Invalid query: {field_parsing_failed,{<<"age_int">>,<<"0,25">>}}
+
+[~%]curl http://127.0.0.1:10018/buckets/users/index/age_int/0/25
+{"keys":["anthony"]}% 
+
+curl -XPUT -H "x-riak-index-age_bin: 25" -H "Content-Type: application/json" -d '{"name": "Anthony J Dacosta"}' http://127.0.0.1:10018/buckets/users/keys/anthony
+
+curl http://127.0.0.1:10018/buckets/users/index/age_bin/25
+{"keys":["anthony"]}%
+
+./dev1/bin/riak attach
+Eshell V5.9.1  (abort with ^G)
+{ok, C} = riak:local_client().
+{ok,{riak_client,'dev1@127.0.0.1',undefined}}
+
+{ok, Keys} = C:get_index( <<"users">>, {eq, <<"age_bin">> , 25 }).
+{ok,[]}
+(dev1@127.0.0.1)3>
+(dev1@127.0.0.1)3>  {ok, Keys} = C:get_index( {eq, <<"age_bin">> , 25 }).
+** exception error: undefined function riak_client:get_index/2
+(dev1@127.0.0.1)4>
+(dev1@127.0.0.1)4>  {ok, Keys} = C:get_index( <<"users">>, {range, <<"age_bin">> , [0,100] }).
+
+BREAK: (a)bort (c)ontinue (p)roc info (i)nfo (l)oaded
+       (v)ersion (k)ill (D)b-tables (d)istribution
+^C%                                                                                             [
+
+
+
+[~%]curl http://127.0.0.1:10018/buckets/users/index/age_int/0/25
+{"keys":["anthony"]}%
+
+Bryan Hunt
+23:40
+using riak_local_client 
+
+(dev1@127.0.0.1)8> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 }).
+{ok,[<<"anthony">>]}
+(dev1@127.0.0.1)9> C:get_index( <<"users">>, {range, <<"age_int">> , [8,25] }).
+{error,{error,timeout}}
+but using the HTTP client both queries work correctly
+[~%]curl http://127.0.0.1:10018/buckets/users/index/age_int/0/25
+{"keys":["anthony"]}%
+Any idea why? It times out every time on the range query
+
+

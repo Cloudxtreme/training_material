@@ -1,190 +1,289 @@
-autoscale: true
-build-lists: true
-footer: © Basho, 2015
+autoscale:true 
+footer: © Basho Technologies, 2015
 slidenumbers: true
-
-![inline](design-assets/Riak-Product-Logos/eps/riak-logo-color.eps)
 
 # Yokozuna and CRDT example
 
 ---
 
-# Overview 
+# Setup
+
+Define a variable containing the IP address (and port) of the Riak hostname.
+
+```bash
 
 
-
----
-
-
-# Objectives
-
-
-
----
-
-# Prerequisites
-
-* Machine with 8GB RAM (and most of that free)
-* A 'devrel' installation of Riak 2.1+ with 3 available nodes
-
----
-
-# Global Variables
-
-Set a variable defining the Riak hostname and HTTP port number
-
-```
 export RIAK=localhost:10018
+
+```
+
+---
+
+If this is not a fresh cluster, it might be nice to get it into a consistent state from the start
+
+---
+
+# Cleanup (step 1)!
+
+```bash
+for i in `seq 1 6`;
+    do ./dev$i/bin/riak stop ; 
+done
+```
+---
+
+# Cleanup (step 2)!
+
+```bash
+for i in `seq 1 6`; 
+do 
+dev$i/bin/riak stop
+rm -rf \
+dev$i/data/anti_entropy dev$i/data/ring dev$i/data/bitcask \
+dev$i/data/cluster_meta dev$i/data/generated.configs \
+dev$i/data/kv_vnode dev$i/data/riak_kv_exchange_fsm \
+dev$i/data/riak_repl dev$i/data/yz dev$i/data/yz_anti_entropy ;
+done
 ```
 
 ---
 
-## Perform some cleanup (part 1)!
+# Cleanup (step 3)!
 
-    for i in 1 2 3
-        do ./dev$i/bin/riak stop 
-        rm -rf ./dev$i/data
-    done
+in dev$i/etc/riak.conf ...
 
----
-
-### Perform some setup 
-
-    vi ./dev[123]/etc/riak.conf
-
-    search = on
-    anti_entropy = active
-    anti_entropy.concurrency_limit = 2
-    anti_entropy.tree.build_limit.number = 2
-    anti_entropy.tree.build_limit.per_timespan = 1h
-
----
-
-# Join up a fresh cluster
-
-    for i in 1 2 3
-        do ./dev$i/bin/riak start
-    done
-
-    ./dev1/bin/riak-admin cluster join dev2@127.0.0.1
-    ./dev2/bin/riak-admin cluster join dev3@127.0.0.1
-    ./dev3/bin/riak-admin cluster join dev1@127.0.0.1
-    ./dev1/bin/riak-admin cluster plan
-    ./dev1/bin/riak-admin cluster commit
-
----
-
-
-### When running on a slow machine...
-
-```
-     WAIT_FOR_ERLANG=120 ./dev1/bin/riak start
-```
-
-
-^ And finally, I'm working on a very slow machine, or perhaps it's this version..
-
----
-
-
-# Examine and edit the default schema  
-
-```
-    curl $RIAK/search/schema/_yz_default > default.schema.xml
-    vim default.schema.xml
+```ini
+anti_entropy = active
+anti_entropy.concurrency_limit = 2
+anti_entropy.tree.build_limit.number = 2
+anti_entropy.tree.build_limit.per_timespan = 1h
 ```
 
 ---
-# What's in the (schema) file (1) ?
+
+And finally.. 
+
+```bash
+WAIT_FOR_ERLANG=120 ./dev1/bin/riak start
+```
+
+^The reason we do this, is because in Riak is configured to crash at startup if Riak takes more than 10 seconds to startup. 
+^On a heavily loaded virtual machine, it is entirely possible it will take more that that to start.
+
+---
+
+# Solr schema 
+
+---
+
+Download and examine the default schema 
+
+```bash
+
+
+
+
+curl $RIAK/search/schema/_yz_default \
+> default.schema.xml
+```
+
+^Lets take a look at a typical Solr schema 
+^Open `default.schema.xml` using your favorite editor, and examine the contents.
+
+---
+
+## Schema element types
+
+---
+
+* Static 
+* Dynamic 
+* Multivalued 
+* Ignore
+* Yokozuna 
+* Riak Data Types 
+
+---
+
+### Static elements
+
+---
+
+Example of Static element...
 
 ```xml
+<field name="_version_" type="long" indexed="true" stored="true"/>
+```
 
-<?xml version="1.0" encoding="UTF-8" ?>
-<schema name="default" version="1.5">
- <fields>
-   <field name="_version_" type="long" indexed="true"
-    stored="true"/>
-   <field name="text" type="text_general" indexed="true" 
-    stored="false" multiValued="true"/>
-   <dynamicField name="*_i"  type="int"
-    indexed="true"  stored="true"  multiValued="false"/>
-   ...
-``` 
+* name - Match on the document element name
+* type - How Solr should interpret the value (String, time, Integer)
+* indexed - whether the field should be indexed or not
+* stored - whether to store the object text
 
 ---
 
-# What's in the (schema) file (2) ?
+### Dynamic elements
 
 ```xml
-
-
-<!-- languages -->
- <dynamicField name="*_en" type="text_en" 
-    indexed="true" stored="true" multiValued="true"/>
- <dynamicField name="*_ar" type="text_ar" 
-    indexed="true" stored="true" multiValued="true"/>
- <dynamicField name="*_bg" type="text_bg" 
-    indexed="true" stored="true" multiValued="true"/>
-
+<dynamicField 
+ name="*_s"  
+ type="string"  
+ indexed="true"  
+ stored="true" 
+ multiValued="false"/>
 ```
----
 
-
-# Upload a new schema named `example_schema`
-
-```
-    curl -XPUT \
-    -H 'Content-Type: application/xml' \
-    http://$RIAK/search/schema/example_schema \
-    --data-binary @default.schema.xml
-```
+^ name = Wildcard match on any element name suffixed with '_s'
 
 ---
 
-# Associate `example_schema` with a new index - `example_index`
+### Multivalued dynamic elements
 
+```xml
+<dynamicField 
+ name="*_ss" 
+ type="string"  
+ indexed="true"
+ stored="true"
+ multiValued="true"/>
 ```
-    curl -XPUT \
-    http://$RIAK/search/index/example_index \
-    -H 'content-type: application/json' \
-    -d '{"schema":"example_schema"}'
+
+^ multiValued = Consider every sub-element of this element when indexing
+
+
+---
+
+### Ignore 
+
+```xml
+<dynamicField name="*" type="ignored" />
+```
+
+--- 
+
+### Yokozuna elements
+
+
+
+---
+
+### Riak Data Type elements (default fields)
+
+```xml
+<field name="counter" 
+       type="int"    
+       indexed="true" 
+       stored="true" 
+       multiValued="false" />
+<field name="set"     
+       type="string" 
+       indexed="true" 
+       stored="false" 
+       multiValued="true" />
+```
+
+---
+
+### Riak Data Type elements
+
+```xml
+<dynamicField name="*_flag"     
+              type="boolean" 
+              indexed="true" 
+              stored="true" 
+              multiValued="false" />
+```
+
+---
+
+```xml
+<dynamicField name="*_counter"  
+              type="int"
+              indexed="true"
+              stored="true" 
+              multiValued="false" />
+```
+
+---
+
+```xml
+<dynamicField name="*_register" 
+              type="string"  
+              indexed="true" 
+              stored="true" 
+              multiValued="false" />
+```
+
+---
+
+```xml
+<dynamicField name="*_set"      
+              type="string"  
+              indexed="true" 
+              stored="false" 
+              multiValued="true" />
+```
+
+---
+
+# Create a new schema 
+
+Create a scheme named : `example_schema`
+
+```bash
+
+curl -XPUT \
+-H 'Content-Type: application/xml' \
+http://$RIAK/search/schema/example_schema \
+--data-binary @default.schema.xml
+```
+
+---
+
+# Associate the schema 
+
+Associate `example_schema` with `example_index`
+
+```bash
+
+curl -i  \
+-XPUT http://$RIAK/search/index/example_index \
+-H 'content-type: application/json' \
+-d '{"schema":"example_schema"}'
 ```
 
 ---
 
 # List existing bucket-types 
 
-```
-riak-admin bucket-type list
+```bash
+dev1/bin/riak-admin bucket-type list
 ```
 
 ---
 
-# Create a bucket-type to hold map Riak Data Types
+# Create a maps bucket-type
 
-```
-dev1/bin/riak-admin bucket-type create maps '
-    {"props":
-        {"datatype":"map", "search_index":"example_index" }
-    }'
+```bash
+dev1/bin/riak-admin bucket-type create maps \
+'{"props":{"datatype":"map", "search_index":"example_index" }}'
 ```
 
 ---
 
 # Activate the maps bucket-type
 
-```
-riak-admin bucket-type activate maps
+```bash
+dev1/bin/riak-admin bucket-type activate maps
 ```
 
 ---
 
-## POST a Riak CRDT update 
+# Update a CRDT within the bucket-type
 
 ```bash
-
-curl -X POST "$RIAK/types/maps/buckets/users/datatypes/binarytemple" \
--H "content-type: application/json" \
+curl -X POST $RIAK/types/maps/buckets/fooz/datatypes/baz \
+-H"content-type: application/json" \
 -d '
 {
    "update" : {
@@ -197,75 +296,70 @@ curl -X POST "$RIAK/types/maps/buckets/users/datatypes/binarytemple" \
       "stone_counter" : 50,
       "gold_counter" : 100
    }
-}'
+}
+'
 ```
 
 ---
 
-## Search for the key 'binarytemple' 
+Search for every field in the Yokozuna index (wildcard)
 
-```
-curl "http://$RIAK/search/query/example_index?q=_yz_rk:\"binarytemple\""
-```
-
-^ `_yz_rk` is the indexed field used to index riak objects
-
----
-
-## Search for the every item matching the key 'baz' 
-
-```
-    curl 'http://$RIAK/search/query/example_index?q=_yz_rk:"baz"'
+```bash
+curl 'http://$RIAK/search/query/example_index?q=_yz_rk:"baz"'
 ```
 
 ---
 
-## Search for every item in the `fooz` bucket
+Search for the every item matching the key 'baz' 
 
-```
-    curl 'http://$RIAK/search/query/example_index?q=_yz_rb:"fooz"'
-```
-
----
-
-## Insert another item
-
-```
-    curl \
-    -X POST $RIAK/types/maps/buckets/fooz/datatypes/baz2 \
-    -H"content-type: application/json"  \
-    -d '{
-        "update":{
-           "age_counter": 39, 
-           "foo_set" : { "add_all" : [ "java","erlang" ] }}
-       }'
+```bash
+curl 'http://$RIAK/search/query/example_index?q=_yz_rk:"baz"'
 ```
 
 ---
 
-## Query for all items in the `fooz` bucket again
+Search for every item in the `fooz` bucket
 
-```
+```bash
 curl 'http://$RIAK/search/query/example_index?q=_yz_rb:"fooz"'
 ```
 
 ---
 
-## Fetch the id’s of all the items in the ‘posts' bucket
+Insert another item
 
+```bash
+curl -X POST $RIAK/types/maps/buckets/fooz/datatypes/baz2 \
+-H"content-type: application/json"  \
+-d '{"update":{"age_counter": 39, "foo_set" : { "add_all" : [ "java","erlang" ] }}}'
 ```
+
+And query for all items in the `fooz` bucket again
+
+```bash
+curl 'http://$RIAK/search/query/example_index?q=_yz_rb:"fooz"'
+```
+
+---
+Get the id’s of all the items in the ‘posts' bucket
+
+```bash
 curl -X GET "localhost:8098/types/maps/buckets/fooz/keys?keys=true”
 ```
 ---
 
-### *WARNING don't send to console* This produces a binary blob
+*WARNING* - Don't send this to /dev/std\* it returns a nasty binary blob 
 
-## >>> curl -X GET "$RIAK/types/maps/buckets/fooz/keys/baz2" | less
+```bash
+curl -X GET "$RIAK/types/maps/buckets/fooz/keys/baz2" | less
+```
 
 ---
 
-## But this request gives me a nice JSON representation
+Lets see a nice JSON representation instead
 
 ```
 curl -X GET "$RIAK/types/maps/buckets/fooz/datatypes/baz2”
 ```
+
+
