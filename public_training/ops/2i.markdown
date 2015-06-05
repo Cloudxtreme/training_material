@@ -1,87 +1,559 @@
 
+
 ---
+
+Enable the leveldb backend 
+
+---
+Riak 1.4
+
+```erlang
+%% Riak KV config
+ {riak_kv, [
+            %% Storage_backend specifies the Erlang module defining the storage
+            %% mechanism that will be used on this node.
+            %% {storage_backend, riak_kv_bitcask_backend},
+            {storage_backend, riak_kv_eleveldb_backend},
+```
+
+---
+
+Riak 2.x
+
+```
+storage_backend = eleveldb
+```
+
+
+---
+
+Add indexed content..
 
 ```
 curl -XPUT \
--H "x-riak-index-age_bin: 25" \
+-H "x-riak-index-age_int: 25" \
 -H "Content-Type: application/json" \
 -d '{"name": "Anthony J Dacosta"}' \
 http://127.0.0.1:10018/buckets/users/keys/anthony
 ```
 ---
 
+Query using curl
 
-
-
-
-(dev1@127.0.0.1)1> {ok, C} = riak:local_client().
-{ok,{riak_client,'dev1@127.0.0.1',undefined}}
-(dev1@127.0.0.1)2> C:get_index( <<"users">>, {eq, <<"age_bin">> }, 25 }).
-* 1: syntax error before: '}'
-(dev1@127.0.0.1)2> C:get_index( <<"users">>, {eq, <<"age_bin">> , 25 }).
-{ok,[]}
-(dev1@127.0.0.1)3>
-(dev1@127.0.0.1)3> C:get_index( <<"users">>, {eq, <<"age">> , 25 }).
-{ok,[]}
-(dev1@127.0.0.1)4> C:get_index( <<"users">>, {range, <<"age_bin">> , [0,25] }).
-{error,timeout}
-(dev1@127.0.0.1)5> C:get_index( <<"users">>, {eq, <<"age">> , 25 }).
-{ok,[]}
-(dev1@127.0.0.1)6>
-(dev1@127.0.0.1)6> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 }).
-{ok,[<<"anthony">>]}
-(dev1@127.0.0.1)7>
-
-
-[~%]curl -XPUT -H "x-riak-index-age_int: 25" -H "Content-Type: application/json" -d '{"name": "Anthony J Dacosta"}' http://127.0.0.1:10018/buckets/users/keys/anthony
-[~%]
-[~%]curl http://127.0.0.1:10018/buckets/users/index/age_int/25
-{"keys":["anthony"]}%
-
-[~%]curl http://127.0.0.1:10018/buckets/users/index/age_int/0,25
-Invalid query: {field_parsing_failed,{<<"age_int">>,<<"0,25">>}}
-
+Exact match
+```
 [~%]curl http://127.0.0.1:10018/buckets/users/index/age_int/0/25
 {"keys":["anthony"]}% 
+```
 
-curl -XPUT -H "x-riak-index-age_bin: 25" -H "Content-Type: application/json" -d '{"name": "Anthony J Dacosta"}' http://127.0.0.1:10018/buckets/users/keys/anthony
+---
 
-curl http://127.0.0.1:10018/buckets/users/index/age_bin/25
-{"keys":["anthony"]}%
+And the range query
 
-./dev1/bin/riak attach
-Eshell V5.9.1  (abort with ^G)
-{ok, C} = riak:local_client().
+```
+curl http://127.0.0.1:10018/buckets/users/index/age_int/0/25
+{"keys":["anthony"]}
+```
+
+---
+
+Using the riak local client
+
+```
+riak attach
+```
+
+```
+(dev1@127.0.0.1)1> {ok, C} = riak:local_client().
 {ok,{riak_client,'dev1@127.0.0.1',undefined}}
 
-{ok, Keys} = C:get_index( <<"users">>, {eq, <<"age_bin">> , 25 }).
-{ok,[]}
-(dev1@127.0.0.1)3>
-(dev1@127.0.0.1)3>  {ok, Keys} = C:get_index( {eq, <<"age_bin">> , 25 }).
-** exception error: undefined function riak_client:get_index/2
-(dev1@127.0.0.1)4>
-(dev1@127.0.0.1)4>  {ok, Keys} = C:get_index( <<"users">>, {range, <<"age_bin">> , [0,100] }).
-
-BREAK: (a)bort (c)ontinue (p)roc info (i)nfo (l)oaded
-       (v)ersion (k)ill (D)b-tables (d)istribution
-^C%                                                                                             [
-
-
-
-[~%]curl http://127.0.0.1:10018/buckets/users/index/age_int/0/25
-{"keys":["anthony"]}%
-
-Bryan Hunt
-23:40
-using riak_local_client 
-
-(dev1@127.0.0.1)8> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 }).
+C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
 {ok,[<<"anthony">>]}
-(dev1@127.0.0.1)9> C:get_index( <<"users">>, {range, <<"age_int">> , [8,25] }).
-{error,{error,timeout}}
-but using the HTTP client both queries work correctly
-[~%]curl http://127.0.0.1:10018/buckets/users/index/age_int/0/25
-{"keys":["anthony"]}%
-Any idea why? It times out every time on the range query
 
+C:get_index( <<"users">>, {range, <<"age_bin">> , [0,25] },[{r, 1}, {timeout, 60000}]).
+{error,timeout}
+```
+
+---
+
+Lets investigate the timeout
+
+https://github.com/basho/riak_kv/blob/master/src/riak_client.erl#L710
+
+redbug:start("riak_kv_index_fsm_sup:start_index_fsm",[ {msgs,1}, {file, "/tmp/fsm_trace"}])
+
+bread:trc("/tmp/fsm_trace.trc", fun(X, A) -> io:format("trace:~p\n", [X]), A +1  end, 0).
+
+trace:{trace_ts,<6016.7190.0>,call,
+          {riak_kv_index_fsm_sup,start_index_fsm,
+              ['dev1@127.0.0.1',
+               [{raw,46384266,<6016.7190.0>},
+                [<<"users">>,none,
+                 {range,<<"age_int">>,[0,25]},
+                 60,all,undefined]]]},
+          {1433,361470,455307}}
+1
+
+
+.... history ... 
+
+-> return;stack
+
+
+
+[~%]
+[~%]
+[~%]cd /basho/riak
+riak/                      riak-training/             riak_cs_ruby_tools/        riak_mac_mini_demo/
+riak-app/                  riak1.4.12/                riak_cs_test_harness/      riak_nagios/
+riak-aws-launcher/         riak1.4.9/                 riak_cs_tool/              riak_olap/
+riak-chef-cookbook/        riak101_training/          riak_cs_trial_activation/  riak_on_azure/
+riak-cluster-service/      riak2.0/                   riak_cs_web/               riak_pb/
+riak-cs-chef-cookbook/     riak_api/                  riak_dt/                   riak_pipe/
+riak-cxx-client/           riak_auth_mods/            riak_ee/                   riak_repl/
+riak-eds-chef-cookbook/    riak_blockdev/             riak_ee-issues/            riak_repl_pb_api/
+riak-erlang-client/        riak_charm/                riak_ensemble/             riak_search/
+riak-erlang-http-client/   riak_control/              riak_err/                  riak_search_ee/
+riak-hadoop/               riak_core/                 riak_etl/                  riak_snmp/
+riak-java-client/          riak_crdt_cookbook/        riak_etl_client/           riak_sysmon/
+riak-javascript-client/    riak_cs/                   riak_etl_restored/         riak_test/
+riak-manage/               riak_cs_acl/               riak_function_contrib/     riakcs-postcommit-search/
+riak-onedotoh-preview/     riak_cs_auth/              riak_hdfs/                 riaknostic/
+[~%]cd /basho/riak_ee
+[/basho/riak_ee%]riak_limit
+Password:
+Sorry, try again.
+Password:
+[/basho/riak_ee%]
+[/basho/riak_ee%]
+[/basho/riak_ee%]./dev/dev1/bin/riak start
+Node is already running!
+[/basho/riak_ee%]./dev/dev1/bin/riak ping
+pong
+[/basho/riak_ee%]ps awux | grep riak
+bryanhunt       93181   4.9  0.5  5293008  91620 s012  Ss+   5:08pm   4:18.31 /basho/riak_ee/dev/dev3/bin/../erts-5.9.1/bin/beam.smp -K true -A 64 -W w -P 256000 -- -root /basho/riak_ee/dev/dev3/bin/.. -progname riak -- -home /Users/bryanhunt -- -boot /basho/riak_ee/dev/dev3/bin/../releases/1.4.10/riak -config /basho/riak_ee/dev/dev3/bin/../etc/app.config -pa /basho/riak_ee/dev/dev3/bin/../lib/basho-patches -name dev3@127.0.0.1 -setcookie riak1 -smp enable -- console
+bryanhunt       93581   4.1  0.6  5293500  93276 s014  Ss+   5:08pm   4:37.38 /basho/riak_ee/dev/dev5/bin/../erts-5.9.1/bin/beam.smp -K true -A 64 -W w -P 256000 -- -root /basho/riak_ee/dev/dev5/bin/.. -progname riak -- -home /Users/bryanhunt -- -boot /basho/riak_ee/dev/dev5/bin/../releases/1.4.10/riak -config /basho/riak_ee/dev/dev5/bin/../etc/app.config -pa /basho/riak_ee/dev/dev5/bin/../lib/basho-patches -name dev5@127.0.0.1 -setcookie riak2 -smp enable -- console
+bryanhunt       93016   1.6  0.5  5293580  91292 s008  Ss+   5:08pm   4:24.19 /basho/riak_ee/dev/dev2/bin/../erts-5.9.1/bin/beam.smp -K true -A 64 -W w -P 256000 -- -root /basho/riak_ee/dev/dev2/bin/.. -progname riak -- -home /Users/bryanhunt -- -boot /basho/riak_ee/dev/dev2/bin/../releases/1.4.10/riak -config /basho/riak_ee/dev/dev2/bin/../etc/app.config -pa /basho/riak_ee/dev/dev2/bin/../lib/basho-patches -name dev2@127.0.0.1 -setcookie riak1 -smp enable -- console
+bryanhunt       92864   0.9  0.6  7913356  93904 s001  Ss+   5:08pm   4:22.63 /basho/riak_ee/dev/dev1/bin/../erts-5.9.1/bin/beam.smp -K true -A 64 -W w -P 256000 -- -root /basho/riak_ee/dev/dev1/bin/.. -progname riak -- -home /Users/bryanhunt -- -boot /basho/riak_ee/dev/dev1/bin/../releases/1.4.10/riak -config /basho/riak_ee/dev/dev1/bin/../etc/app.config -pa /basho/riak_ee/dev/dev1/bin/../lib/basho-patches -name dev1@127.0.0.1 -setcookie riak1 -smp enable -- console
+bryanhunt       93369   0.3  0.6  5292120  92652 s013  Ss+   5:08pm   4:33.34 /basho/riak_ee/dev/dev4/bin/../erts-5.9.1/bin/beam.smp -K true -A 64 -W w -P 256000 -- -root /basho/riak_ee/dev/dev4/bin/.. -progname riak -- -home /Users/bryanhunt -- -boot /basho/riak_ee/dev/dev4/bin/../releases/1.4.10/riak -config /basho/riak_ee/dev/dev4/bin/../etc/app.config -pa /basho/riak_ee/dev/dev4/bin/../lib/basho-patches -name dev4@127.0.0.1 -setcookie riak2 -smp enable -- console
+bryanhunt       93819   0.1  0.5  5291524  90764 s015  Ss+   5:08pm   4:22.10 /basho/riak_ee/dev/dev6/bin/../erts-5.9.1/bin/beam.smp -K true -A 64 -W w -P 256000 -- -root /basho/riak_ee/dev/dev6/bin/.. -progname riak -- -home /Users/bryanhunt -- -boot /basho/riak_ee/dev/dev6/bin/../releases/1.4.10/riak -config /basho/riak_ee/dev/dev6/bin/../etc/app.config -pa /basho/riak_ee/dev/dev6/bin/../lib/basho-patches -name dev6@127.0.0.1 -setcookie riak2 -smp enable -- console
+bryanhunt       93816   0.0  0.0  2462468    468   ??  S     5:08pm   0:00.02 /basho/riak_ee/dev/dev6/bin/../erts-5.9.1/bin/run_erl -daemon /tmp//basho/riak_ee/dev/dev6/bin/..// /basho/riak_ee/dev/dev6/bin/../log exec /basho/riak_ee/dev/dev6/bin/riak console
+bryanhunt       93578   0.0  0.0  2451204    416   ??  S     5:08pm   0:00.02 /basho/riak_ee/dev/dev5/bin/../erts-5.9.1/bin/run_erl -daemon /tmp//basho/riak_ee/dev/dev5/bin/..// /basho/riak_ee/dev/dev5/bin/../log exec /basho/riak_ee/dev/dev5/bin/riak console
+bryanhunt       93366   0.0  0.0  2443012    432   ??  S     5:08pm   0:00.02 /basho/riak_ee/dev/dev4/bin/../erts-5.9.1/bin/run_erl -daemon /tmp//basho/riak_ee/dev/dev4/bin/..// /basho/riak_ee/dev/dev4/bin/../log exec /basho/riak_ee/dev/dev4/bin/riak console
+bryanhunt       93178   0.0  0.0  2461444    432   ??  S     5:08pm   0:00.02 /basho/riak_ee/dev/dev3/bin/../erts-5.9.1/bin/run_erl -daemon /tmp//basho/riak_ee/dev/dev3/bin/..// /basho/riak_ee/dev/dev3/bin/../log exec /basho/riak_ee/dev/dev3/bin/riak console
+bryanhunt       93013   0.0  0.0  2443012    424   ??  S     5:08pm   0:00.02 /basho/riak_ee/dev/dev2/bin/../erts-5.9.1/bin/run_erl -daemon /tmp//basho/riak_ee/dev/dev2/bin/..// /basho/riak_ee/dev/dev2/bin/../log exec /basho/riak_ee/dev/dev2/bin/riak console
+bryanhunt       92861   0.0  0.0  2453252    456   ??  S     5:08pm   0:00.02 /basho/riak_ee/dev/dev1/bin/../erts-5.9.1/bin/run_erl -daemon /tmp//basho/riak_ee/dev/dev1/bin/..// /basho/riak_ee/dev/dev1/bin/../log exec /basho/riak_ee/dev/dev1/bin/riak console
+bryanhunt       92842   0.0  0.0  2497300    484   ??  S     5:08pm   0:00.11 /basho/riak_ee/dev/dev1/bin/../erts-5.9.1/bin/epmd -daemon
+bryanhunt       86036   0.0  0.0  2441988    668 s003  R+    8:36pm   0:00.00 grep riak
+[/basho/riak_ee%]riak_stop_dev_nodes
+ok
+ok
+
+
+ok
+ok
+
+ok
+ok
+
+[/basho/riak_ee%]
+[/basho/riak_ee%]./dev/dev1/bin/riak start
+
+
+
+[/basho/riak_ee%]v ./dev/dev1/etc/app.config
+[/basho/riak_ee%]v ./dev/dev1/etc/app.config
+[/basho/riak_ee%]./dev/dev1/bin/riak attach
+Remote Shell: Use "Ctrl-C a" to quit. q() or init:stop() will terminate the riak node.
+Erlang R15B01 (erts-5.9.1) [source] [64-bit] [smp:8:8] [async-threads:0] [kernel-poll:false]
+
+Eshell V5.9.1  (abort with ^G)
+(dev1@127.0.0.1)1> {ok, C} = riak:local_client().
+{ok,{riak_client,'dev1@127.0.0.1',undefined}}
+(dev1@127.0.0.1)2> THIS.
+* 1: variable 'THIS' is unbound
+(dev1@127.0.0.1)3> C:get_index( <<"users">>, {eq, <<"age_bin">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[]}
+(dev1@127.0.0.1)4> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+(dev1@127.0.0.1)5> C:get_index( <<"users">>, {range, <<"age_bin">> , [0,25] },[{r, 1}, {timeout, 60}]).
+{error,timeout}
+(dev1@127.0.0.1)6> C:get_index( <<"users">>, {range, <<"age_bin">> , [0,25] },[{r, 1}, {timeout, 600}]).
+{error,timeout}
+(dev1@127.0.0.1)7> C:get_index( <<"users">>, {range, <<"age_bin">> , [0,25] },[{r, 1}, {timeout, 60000}]).
+{error,timeout}
+(dev1@127.0.0.1)8>
+(dev1@127.0.0.1)8> C:get_index( <<"users">>, {range, <<"age_int">> , [0,25] },[{r, 1}, {timeout, 60000}]).
+{error,timeout}
+(dev1@127.0.0.1)9>
+(dev1@127.0.0.1)9>
+(dev1@127.0.0.1)9>
+(dev1@127.0.0.1)9> redbug:start("riak_kv_index_fsm_sup:start_index_fsm -> return;stack",[{time, 180000}, {msgs,3}, {file, "/tmp/test_trace3"}]).
+ok
+(dev1@127.0.0.1)10> C:get_index( <<"users">>, {range, <<"age_int">> , [0,25] },[{r, 1}, {timeout, 60000}]).
+{error,{error,timeout}}
+(dev1@127.0.0.1)11>
+(dev1@127.0.0.1)11> redbug:start("riak_kv_index_fsm_sup:start_index_fsm",[{ {msgs,1}, {file, "/tmp/test_trace3"}]).
+
+* 2: syntax error before: ']'
+(dev1@127.0.0.1)11> redbug:start("riak_kv_index_fsm_sup:start_index_fsm",[ {msgs,1}, {file, "/tmp/test_trace3"}]).
+redbug_already_started
+(dev1@127.0.0.1)12> redbug:stop().
+{stop,[]}
+quitting: local_done
+(dev1@127.0.0.1)13> redbug:start("riak_kv_index_fsm_sup:start_index_fsm",[ {msgs,1}, {file, "/tmp/test_trace3"}]).
+ok
+(dev1@127.0.0.1)14> C:get_index( <<"users">>, {range, <<"age_int">> , [0,25] },[{r, 1}, {timeout, 60}]).
+{error,timeout}
+quitting: timeout
+ok
+
+(dev1@127.0.0.1)16> bread:trc("/tmp/test_trace30.trc", fun(X, A) -> io:format("trace:~p\n", [X]), A +1  end, 0).
+trace:{trace_ts,<6016.7190.0>,call,
+          {riak_kv_index_fsm_sup,start_index_fsm,
+              ['dev1@127.0.0.1',
+               [{raw,46384266,<6016.7190.0>},
+                [<<"users">>,none,
+                 {range,<<"age_int">>,[0,25]},
+                 60,all,undefined]]]},
+          {1433,361470,455307}}
+1
+(dev1@127.0.0.1)17>
+(dev1@127.0.0.1)17> bread:trc("/tmp/fsm_trace.trc", fun(X, A) -> io:format("trace:~p\n", [X]), A +1  end, 0).
+** exception exit: {open_error,enoent,"/tmp/fsm_trace.trc"}
+     in function  bread:fold/4 (src/bread.erl, line 54)
+(dev1@127.0.0.1)18>
+(dev1@127.0.0.1)18> redbug:start("riak_kv_index_fsm_sup:start_index_fsm",[ {msgs,1}, {file, "/tmp/test_trace3"}]).
+ok
+quitting: timeout
+(dev1@127.0.0.1)19> redbug:start("riak_kv_index_fsm_sup:start_index_fsm",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)20>
+quitting: timeout
+(dev1@127.0.0.1)20> redbug:start("riak_kv_index_fsm_sup",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+quitting: timeout
+(dev1@127.0.0.1)21>
+(dev1@127.0.0.1)21> bread:trc("/tmp/fsm_trace.trc", fun(X, A) -> io:format("trace:~p\n", [X]), A +1  end, 0).
+** exception exit: {open_error,enoent,"/tmp/fsm_trace.trc"}
+     in function  bread:fold/4 (src/bread.erl, line 54)
+(dev1@127.0.0.1)22> redbug:start("riak_client",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+quitting: timeout
+(dev1@127.0.0.1)23>
+(dev1@127.0.0.1)23> redbug:start("riak_kv_index_fsm_sup",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)24> C:get_index( <<"users">>, {range, <<"age_int">> , [0,25] },[{r, 1}, {timeout, 60}]).
+{error,timeout}
+(dev1@127.0.0.1)25> bread:trc("/tmp/fsm_trace.trc", fun(X, A) -> io:format("trace:~p\n", [X]), A +1  end, 0).
+** exception exit: {open_error,enoent,"/tmp/fsm_trace.trc"}
+     in function  bread:fold/4 (src/bread.erl, line 54)
+quitting: timeout
+(dev1@127.0.0.1)26> bread:trc("/tmp/fsm_trace.trc", fun(X, A) -> io:format("trace:~p\n", [X]), A +1  end, 0).
+** exception exit: {open_error,enoent,"/tmp/fsm_trace.trc"}
+     in function  bread:fold/4 (src/bread.erl, line 54)
+(dev1@127.0.0.1)27> redbug:start("riak_client",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+quitting: timeout
+(dev1@127.0.0.1)28> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+(dev1@127.0.0.1)29>
+(dev1@127.0.0.1)29> redbug:start("_:get_index",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)30> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+(dev1@127.0.0.1)31> redbug:st
+start/1  start/2  start/3  start/4  start/5  stop/0
+(dev1@127.0.0.1)31> redbug:stop().
+not_started
+(dev1@127.0.0.1)32> redbug:start("_:get_index",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)33> redbug:stop().
+not_started
+(dev1@127.0.0.1)34> redbug:start("*:get_index",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)35> redbug:stop().
+not_started
+(dev1@127.0.0.1)36> redbug:start("riak_client:get_index",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)37> redbug:stop().
+{stop,[]}
+quitting: local_done
+(dev1@127.0.0.1)38> redbug:start("riak_client:get_index",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)39> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+(dev1@127.0.0.1)40>
+quitting: timeout
+(dev1@127.0.0.1)40> bread:trc("/tmp/fsm_trace.trc", fun(X, A) -> io:format("trace:~p\n", [X]), A +1  end, 0).
+** exception exit: {open_error,enoent,"/tmp/fsm_trace.trc"}
+     in function  bread:fold/4 (src/bread.erl, line 54)
+(dev1@127.0.0.1)41> redbug:start("riak_client:get_index()",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)42> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+quitting: timeout
+(dev1@127.0.0.1)43> redbug:start("riak_client:get_index(_,_,_)",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)44> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+(dev1@127.0.0.1)45>
+(dev1@127.0.0.1)45> redbug:stop().
+{stop,[]}
+quitting: local_done
+(dev1@127.0.0.1)46>
+(dev1@127.0.0.1)46> redbug:start("riak_client:get_index/3",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)47> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+quitting: timeout
+(dev1@127.0.0.1)48> redbug:start("riak_client:get_index -> return;stack",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)49> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+quitting: timeout
+(dev1@127.0.0.1)50> h().
+30: C:get_index(<<"users">>,
+                {eq,<<"age_int">>,25},
+                [{r,1},{timeout,60}])
+-> {ok,[<<"anthony">>]}
+31: redbug:stop()
+-> not_started
+32: redbug:start("_:get_index", [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+33: redbug:stop()
+-> not_started
+34: redbug:start("*:get_index", [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+35: redbug:stop()
+-> not_started
+36: redbug:start("riak_client:get_index",
+                 [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+37: redbug:stop()
+-> {stop,[]}
+38: redbug:start("riak_client:get_index",
+                 [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+39: C:get_index(<<"users">>,
+                {eq,<<"age_int">>,25},
+                [{r,1},{timeout,60}])
+-> {ok,[<<"anthony">>]}
+40: bread:trc("/tmp/fsm_trace.trc",
+              fun(X, A) ->
+                     io:format("trace:~p\n", [X]),
+                     A + 1
+              end,
+              0)
+-> {'EXIT',{{open_error,enoent,"/tmp/fsm_trace.trc"},
+            [{bread,fold,4,[{file,"src/bread.erl"},{line,54}]},
+             {erl_eval,do_apply,6,[{file,"erl_eval.erl"},{line,576}]},
+             {shell,exprs,7,[{file,"shell.erl"},{line,668}]},
+             {shell,eval_exprs,7,[{file,"shell.erl"},{line,623}]},
+             {shell,eval_loop,3,[{file,"shell.erl"},{line,608}]}]}}
+41: redbug:start("riak_client:get_index()",
+                 [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+42: C:get_index(<<"users">>,
+                {eq,<<"age_int">>,25},
+                [{r,1},{timeout,60}])
+-> {ok,[<<"anthony">>]}
+43: redbug:start("riak_client:get_index(_,_,_)",
+                 [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+44: C:get_index(<<"users">>,
+                {eq,<<"age_int">>,25},
+                [{r,1},{timeout,60}])
+-> {ok,[<<"anthony">>]}
+45: redbug:stop()
+-> {stop,[]}
+46: redbug:start("riak_client:get_index/3",
+                 [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+47: C:get_index(<<"users">>,
+                {eq,<<"age_int">>,25},
+                [{r,1},{timeout,60}])
+-> {ok,[<<"anthony">>]}
+48: redbug:start("riak_client:get_index -> return;stack",
+                 [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+49: C:get_index(<<"users">>,
+                {eq,<<"age_int">>,25},
+                [{r,1},{timeout,60}])
+-> {ok,[<<"anthony">>]}
+ok
+(dev1@127.0.0.1)51>
+
+
+
+
+
+
+(dev1@127.0.0.1)41> redbug:start("riak_client:get_index()",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)42> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+quitting: timeout
+(dev1@127.0.0.1)43> redbug:start("riak_client:get_index(_,_,_)",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)44> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+(dev1@127.0.0.1)45>
+(dev1@127.0.0.1)45> redbug:stop().
+{stop,[]}
+quitting: local_done
+(dev1@127.0.0.1)46>
+(dev1@127.0.0.1)46> redbug:start("riak_client:get_index/3",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)47> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+quitting: timeout
+(dev1@127.0.0.1)48> redbug:start("riak_client:get_index -> return;stack",[ {msgs,1}, {file, "/tmp/fsm_trace"}]).
+ok
+(dev1@127.0.0.1)49> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+quitting: timeout
+(dev1@127.0.0.1)50> h().
+30: C:get_index(<<"users">>,
+                {eq,<<"age_int">>,25},
+                [{r,1},{timeout,60}])
+-> {ok,[<<"anthony">>]}
+31: redbug:stop()
+-> not_started
+32: redbug:start("_:get_index", [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+33: redbug:stop()
+-> not_started
+34: redbug:start("*:get_index", [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+35: redbug:stop()
+-> not_started
+36: redbug:start("riak_client:get_index",
+                 [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+37: redbug:stop()
+-> {stop,[]}
+38: redbug:start("riak_client:get_index",
+                 [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+39: C:get_index(<<"users">>,
+                {eq,<<"age_int">>,25},
+                [{r,1},{timeout,60}])
+-> {ok,[<<"anthony">>]}
+40: bread:trc("/tmp/fsm_trace.trc",
+              fun(X, A) ->
+                     io:format("trace:~p\n", [X]),
+                     A + 1
+              end,
+              0)
+-> {'EXIT',{{open_error,enoent,"/tmp/fsm_trace.trc"},
+            [{bread,fold,4,[{file,"src/bread.erl"},{line,54}]},
+             {erl_eval,do_apply,6,[{file,"erl_eval.erl"},{line,576}]},
+             {shell,exprs,7,[{file,"shell.erl"},{line,668}]},
+             {shell,eval_exprs,7,[{file,"shell.erl"},{line,623}]},
+             {shell,eval_loop,3,[{file,"shell.erl"},{line,608}]}]}}
+41: redbug:start("riak_client:get_index()",
+                 [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+42: C:get_index(<<"users">>,
+                {eq,<<"age_int">>,25},
+                [{r,1},{timeout,60}])
+-> {ok,[<<"anthony">>]}
+43: redbug:start("riak_client:get_index(_,_,_)",
+                 [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+44: C:get_index(<<"users">>,
+                {eq,<<"age_int">>,25},
+                [{r,1},{timeout,60}])
+-> {ok,[<<"anthony">>]}
+45: redbug:stop()
+-> {stop,[]}
+46: redbug:start("riak_client:get_index/3",
+                 [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+47: C:get_index(<<"users">>,
+                {eq,<<"age_int">>,25},
+                [{r,1},{timeout,60}])
+-> {ok,[<<"anthony">>]}
+48: redbug:start("riak_client:get_index -> return;stack",
+                 [{msgs,1},{file,"/tmp/fsm_trace"}])
+-> ok
+49: C:get_index(<<"users">>,
+                {eq,<<"age_int">>,25},
+                [{r,1},{timeout,60}])
+-> {ok,[<<"anthony">>]}
+ok
+(dev1@127.0.0.1)51> [
+(dev1@127.0.0.1)51>
+(dev1@127.0.0.1)51> redbug:start("riak_kv_index_fsm_sup:start_index_fsm",[ {msgs,1}, {file, "/tmp/test_trace3"}]).
+* 3: syntax error before: '.'
+(dev1@127.0.0.1)51> redbug:start("riak_kv_index_fsm_sup:start_index_fsm",[ {msgs,1}, {file, "/tmp/test_trace3"}]).
+ok
+(dev1@127.0.0.1)52> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+quitting: timeout
+(dev1@127.0.0.1)53> redbug:start("riak_kv_index_fsm_sup:start_index_fsm  -> return;stack",[ {msgs,1}, {file, "/tmp/thurs"}]).
+ok
+(dev1@127.0.0.1)54> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+(dev1@127.0.0.1)55>
+quitting: timeout
+(dev1@127.0.0.1)55>
+(dev1@127.0.0.1)55> redbug:start(3000,3,{erlang,now,[return]}).
+ok
+
+09:27:55 <timer_server> {erlang,now,[]}
+
+09:27:55 <timer_server> {erlang,now,0} -> {1433,406475,250037}
+
+09:27:55 <timer_server> {erlang,now,[]}
+quitting: msg_count
+(dev1@127.0.0.1)56> redbug:start(3000,3,{riak_kv_index_fsm_sup,_,[return]}).
+* 1: variable '_' is unbound
+(dev1@127.0.0.1)57> redbug:start(3000,3,{riak_kv_index_fsm_sup,[return]}).
+ok
+quitting: timeout
+(dev1@127.0.0.1)58> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+(dev1@127.0.0.1)59> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+(dev1@127.0.0.1)60> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+(dev1@127.0.0.1)61> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+{ok,[<<"anthony">>]}
+(dev1@127.0.0.1)62>
+(dev1@127.0.0.1)62> redbug:start(3000,3,{riak_kv_index_fsm,[return]}).
+ok
+(dev1@127.0.0.1)63> C:get_index( <<"users">>, {eq, <<"age_int">> , 25 },[{r, 1}, {timeout, 60}]).
+
+09:35:52 <{riak_core_coverage_fsm,init,1}> {riak_kv_index_fsm,module_info,
+                                            [exports]}
+
+09:35:52 <{riak_core_coverage_fsm,init,1}> {riak_kv_index_fsm,module_info,1} -> [{use_ack_backpressure,
+                                                                                  0},
+                                                                                 {req,
+                                                                                  3},
+                                                                                 {init,
+                                                                                  2},
+                                                                                 {plan,
+                                                                                  2},
+                                                                                 {process_results,
+                                                                                  3},
+                                                                                 {process_results,
+                                                                                  2},
+                                                                                 {finish,
+                                                                                  2},
+                                                                                 {module_info,
+                                                                                  0},
+                                                                                 {module_info,
+                                                                                  1}]
+
+09:35:52 <{riak_core_coverage_fsm,init,1}> {riak_kv_index_fsm,init,
+                                            [{raw,94245752,<0.31782.0>},
+                                             [<<"users">>,none,
+                                              {eq,<<"age_int">>,25},
+                                              60,all,undefined]]}
+quitting: msg_count
+{ok,[<<"anthony">>]}
+(dev1@127.0.0.1)64> C:get_index( <<"users">>, {range, <<"age_bin">> , [0,25] },[{r, 1}, {timeout, 60000}]).
 

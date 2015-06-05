@@ -61,7 +61,8 @@ curl -X GET http://127.0.0.1:8098/buckets/test/props
 
 # Bucket Properties (1.4)
 
-* Default bucket properties can be specified in the app.config file:
+Default bucket properties can be specified in the app.config file:
+
 ```
 {default_bucket_props, [{n_val,5},{allow_mult,true}]}
 ```
@@ -70,7 +71,7 @@ curl -X GET http://127.0.0.1:8098/buckets/test/props
 
 # Bucket Properties (2.x)
 
-* Default bucket properties can be specified in the riak.conf file:
+Default bucket properties can be specified in the riak.conf file:
 
 ```
 buckets.default.allow_mult = false
@@ -105,7 +106,7 @@ riak-admin bucket-type <action>
 
 ---
 
-* Bucket properties can be overridden via PB or HTTP interface:
+Bucket properties can be overridden via PB or HTTP interface:
 
 ```
 curl -X PUT -H "Content-Type: application/json"\
@@ -240,12 +241,18 @@ curl -v -X DELETE http://127.0.0.1:8098/buckets/person/keys/456
 
 R / W / DW / RW
 
+^for an operation to be considered successfull, the number of replicas which must reply
+^DW number of replicas which must reply to a write request indicating the write was committed to durable storage 
+^RW quorum for both operations (get and put)
+
 ---
 
 # Tuneable Consistency
 
 
 PR / PW 
+
+^ The number of primary, non-fallback replicas that must reply to a read request.
 
 ---
 
@@ -255,6 +262,9 @@ PR / PW
 `return_body`
 `return_head`
 
+
+^ when performing PUT operations, whether to reply with the created object 
+
 ---
 
 # Tuneable Consistency
@@ -262,6 +272,10 @@ PR / PW
 
 `notfound_ok`
 `basic_quorum`
+
+^Whether not-founds will invoke the "basic quorum" optimization. 
+^This setting will short-circuit fetches where the majority of replicas report that the key is not found. Only used when `notfound_ok` is set to false.
+^Whether not-founds will count toward a quorum of reads.
 
 ---
 
@@ -373,6 +387,9 @@ curl 127.0.0.1:8098/buckets/person/index/age_int/20/50?max_results=2
 curl 127.0.0.1:8098/buckets/person/index/age_int/20/50?continuation=g2gCYRNtAAAAATM=&max_results=2
 {"keys":["1"]}
 ```
+
+^TODO:
+^Example of leveldb 2i bucket contents listing.
 
 ---
 

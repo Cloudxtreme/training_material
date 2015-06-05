@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="505" height="394" viewBox="0, 0, 505, 394">
+  <g id="Background">
+    <rect x="0" y="0" width="505" height="394" fill="#FFFFFF"/>
+  </g>
+  <g id="Layer_1">
+    <g>
+      <path d="M2.5,2.5 L70.5,2.5 L70.5,61 L2.5,61 z" fill="#0080FF"/>
+      <path d="M2.5,2.5 L70.5,2.5 L70.5,61 L2.5,61 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M17.5,23.5 L85.5,23.5 L85.5,82 L17.5,82 z" fill="#0080FF"/>
+      <path d="M17.5,23.5 L85.5,23.5 L85.5,82 L17.5,82 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M35.5,42.5 L103.5,42.5 L103.5,101 L35.5,101 z" fill="#0080FF"/>
+      <path d="M35.5,42.5 L103.5,42.5 L103.5,101 L35.5,101 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <g>
+        <text transform="matrix(1, 0, 0, 1, 65.4, 72.25)">
+          <tspan x="-21.828" y="5.5" font-family="HelveticaNeue" font-size="16" fill="#000000">Recor</tspan>
+        </text>
+        <text transform="matrix(1, 0, 0, 1, 91.184, 72.25)">
+          <tspan x="-5.244" y="5.5" font-family="HelveticaNeue" font-size="16" fill="#000000">d</tspan>
+        </text>
+      </g>
+      <path d="M124.846,93.359 L124.846,50.141 L158.523,50.141 L158.523,24.25 L200,71.75 L158.523,119.25 L158.523,93.359 z" fill="#80FF00"/>
+      <path d="M124.846,93.359 L124.846,50.141 L158.523,50.141 L158.523,24.25 L200,71.75 L158.523,119.25 L158.523,93.359 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <text transform="matrix(1, 0, 0, 1, 162.923, 72.25)">
+        <tspan x="-16.508" y="5.5" font-family="HelveticaNeue" font-size="16" fill="#000000">Map</tspan>
+      </text>
+      <path d="M2,132 L70,132 L70,190.5 L2,190.5 z" fill="#0080FF"/>
+      <path d="M2,132 L70,132 L70,190.5 L2,190.5 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M17,153 L85,153 L85,211.5 L17,211.5 z" fill="#0080FF"/>
+      <path d="M17,153 L85,153 L85,211.5 L17,211.5 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M35,172 L103,172 L103,230.5 L35,230.5 z" fill="#0080FF"/>
+      <path d="M35,172 L103,172 L103,230.5 L35,230.5 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <g>
+        <text transform="matrix(1, 0, 0, 1, 64.9, 201.75)">
+          <tspan x="-21.828" y="5.5" font-family="HelveticaNeue" font-size="16" fill="#000000">Recor</tspan>
+        </text>
+        <text transform="matrix(1, 0, 0, 1, 90.684, 201.75)">
+          <tspan x="-5.244" y="5.5" font-family="HelveticaNeue" font-size="16" fill="#000000">d</tspan>
+        </text>
+      </g>
+      <path d="M124.5,224.609 L124.5,181.391 L158.177,181.391 L158.177,155.5 L199.654,203 L158.177,250.5 L158.177,224.609 z" fill="#80FF00"/>
+      <path d="M124.5,224.609 L124.5,181.391 L158.177,181.391 L158.177,155.5 L199.654,203 L158.177,250.5 L158.177,224.609 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <text transform="matrix(1, 0, 0, 1, 162.577, 203.5)">
+        <tspan x="-16.508" y="5.5" font-family="HelveticaNeue" font-size="16" fill="#000000">Map</tspan>
+      </text>
+      <path d="M2.5,275 L70.5,275 L70.5,333.5 L2.5,333.5 z" fill="#0080FF"/>
+      <path d="M2.5,275 L70.5,275 L70.5,333.5 L2.5,333.5 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M17.5,296 L85.5,296 L85.5,354.5 L17.5,354.5 z" fill="#0080FF"/>
+      <path d="M17.5,296 L85.5,296 L85.5,354.5 L17.5,354.5 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M35.5,315 L103.5,315 L103.5,373.5 L35.5,373.5 z" fill="#0080FF"/>
+      <path d="M35.5,315 L103.5,315 L103.5,373.5 L35.5,373.5 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <g>
+        <text transform="matrix(1, 0, 0, 1, 65.4, 344.75)">
+          <tspan x="-21.828" y="5.5" font-family="HelveticaNeue" font-size="16" fill="#000000">Recor</tspan>
+        </text>
+        <text transform="matrix(1, 0, 0, 1, 91.184, 344.75)">
+          <tspan x="-5.244" y="5.5" font-family="HelveticaNeue" font-size="16" fill="#000000">d</tspan>
+        </text>
+      </g>
+      <path d="M124.846,365.859 L124.846,322.641 L158.523,322.641 L158.523,296.75 L200,344.25 L158.523,391.75 L158.523,365.859 z" fill="#80FF00"/>
+      <path d="M124.846,365.859 L124.846,322.641 L158.523,322.641 L158.523,296.75 L200,344.25 L158.523,391.75 L158.523,365.859 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <text transform="matrix(1, 0, 0, 1, 162.923, 344.75)">
+        <tspan x="-16.508" y="5.5" font-family="HelveticaNeue" font-size="16" fill="#000000">Map</tspan>
+      </text>
+      <path d="M215.94,78.709 L242.548,44.652 L269.086,65.386 L285.026,44.984 L288.466,107.95 L226.538,119.845 L242.478,99.443 z" fill="#80FF00"/>
+      <path d="M215.94,78.709 L242.548,44.652 L269.086,65.386 L285.026,44.984 L288.466,107.95 L226.538,119.845 L242.478,99.443 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <text transform="matrix(0.788, 0.616, -0.616, 0.788, 258.941, 85.517)">
+        <tspan x="-16.508" y="5.5" font-family="HelveticaNeue" font-size="16" fill="#000000">Map</tspan>
+      </text>
+      <path d="M220,224.609 L220,181.391 L253.677,181.391 L253.677,155.5 L295.154,203 L253.677,250.5 L253.677,224.609 z" fill="#80FF00"/>
+      <path d="M220,224.609 L220,181.391 L253.677,181.391 L253.677,155.5 L295.154,203 L253.677,250.5 L253.677,224.609 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <text transform="matrix(1, 0, 0, 1, 258.077, 203.5)">
+        <tspan x="-16.508" y="5.5" font-family="HelveticaNeue" font-size="16" fill="#000000">Map</tspan>
+      </text>
+      <path d="M244.832,368.918 L215.357,337.31 L239.987,314.342 L222.33,295.407 L285.059,301.859 L287.12,364.885 L269.462,345.95 z" fill="#80FF00"/>
+      <path d="M244.832,368.918 L215.357,337.31 L239.987,314.342 L222.33,295.407 L285.059,301.859 L287.12,364.885 L269.462,345.95 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <text transform="matrix(0.731, -0.682, 0.682, 0.731, 258.284, 327.511)">
+        <tspan x="-16.508" y="5.5" font-family="HelveticaNeue" font-size="16" fill="#000000">Map</tspan>
+      </text>
+      <path d="M312.423,222.063 L312.423,180.437 L357.523,180.437 L357.523,155.5 L399,201.25 L357.523,247 L357.523,222.063 z" fill="#FFFF00"/>
+      <path d="M312.423,222.063 L312.423,180.437 L357.523,180.437 L357.523,155.5 L399,201.25 L357.523,247 L357.523,222.063 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <text transform="matrix(1, 0, 0, 1, 356.212, 201.75)">
+        <tspan x="-28.06" y="5.5" font-family="HelveticaNeue" font-size="16" fill="#000000">Reduce</tspan>
+      </text>
+      <path d="M416.27,222.063 L416.27,180.437 L461.37,180.437 L461.37,155.5 L502.846,201.25 L461.37,247 L461.37,222.063 z" fill="#FFFF00"/>
+      <path d="M416.27,222.063 L416.27,180.437 L461.37,180.437 L461.37,155.5 L502.846,201.25 L461.37,247 L461.37,222.063 z" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      <text transform="matrix(1, 0, 0, 1, 460.058, 201.75)">
+        <tspan x="-28.06" y="5.5" font-family="HelveticaNeue" font-size="16" fill="#000000">Reduce</tspan>
+      </text>
+    </g>
+  </g>
+</svg>
