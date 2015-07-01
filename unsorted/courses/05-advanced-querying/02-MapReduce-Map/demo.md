@@ -27,11 +27,11 @@ Count the occurrence of the word "demo" in every document in the "docs" bucket:
                            Key = riak_object:key(Object),
                            Value = riak_object:get_value(Object),
                            Value1 = binary_to_list(Value),
-                           Count = case regexp:matches(Value1, \"demo\") of
+                           Count = case re:run(Value1, \"demo\", [global]) of
                                 {match, Matches} -> length(Matches);
                                 _ -> 0
                            end,
-                           [[Key, Count]]
+                           [{Key, Count}]
                          end."}}]}'
 
 Update the MapReduce job to use an argument:
@@ -45,11 +45,11 @@ Update the MapReduce job to use an argument:
                            Value = riak_object:get_value(Object),
                            Value1 = binary_to_list(Value),
                            A1 = binary_to_list(A),
-                           Count = case regexp:matches(Value1, A1) of
+                           Count = case re:run(Value1, A1, [global]) of
                                 {match, Matches} -> length(Matches);
                                 _ -> 0
                            end,
-                           [[Key, Count]]
+                           [{Key, Count}]
                          end."}}]}'
 
 Update the MapReduce job to just query the "foo", "bar", "baz" docs:
@@ -63,11 +63,11 @@ Update the MapReduce job to just query the "foo", "bar", "baz" docs:
                            Value = riak_object:get_value(Object),
                            Value1 = binary_to_list(Value),
                            A1 = binary_to_list(A),
-                           Count = case regexp:matches(Value1, A1) of
+                           Count = case re:run(Value1, A1, [global]) of
                                 {match, Matches} -> length(Matches);
                                 _ -> 0
                            end,
-                           [[Key, Count]]
+                           [{Key, Count}]
                          end."}}]}'
 
 Update the MapReduce job to use keydata:
@@ -83,9 +83,9 @@ Update the MapReduce job to use keydata:
                            Value = riak_object:get_value(Object),
                            Value1 = binary_to_list(Value),
                            KD1 = binary_to_list(KD),
-                           Count = case regexp:matches(Value1, KD1) of
+                           Count = case re:run(Value1, KD1, [global]) of
                                 {match, Matches} -> length(Matches);
                                 _ -> 0
                            end,
-                           [[Key, KD, Count]]
+                           [{Key, [{KD, Count}]}]
                          end."}}]}'
