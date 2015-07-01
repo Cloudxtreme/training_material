@@ -25,7 +25,7 @@ count.
                            Value = riak_object:get_value(Object),
                            Value1 = binary_to_list(Value),
                            A1 = binary_to_list(A),
-                           Count = case regexp:matches(Value1, A1) of
+                           Count = case re:run(Value1, A1, [global]) of
                                 {match, Matches} -> length(Matches);
                                 _ -> 0
                            end,
@@ -48,7 +48,7 @@ Add a reduce phase that returns the second document.
                            Value = riak_object:get_value(Object),
                            Value1 = binary_to_list(Value),
                            A1 = binary_to_list(A),
-                           Count = case regexp:matches(Value1, A1) of
+                           Count = case re:run(Value1, A1, [global]) of
                                 {match, Matches} -> length(Matches);
                                 _ -> 0
                            end,
