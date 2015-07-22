@@ -38,7 +38,7 @@ Please read the following guidelines carefully. Legacy material that does not fo
 
 ### Metadata & Review
 
-+ metadata for all modules is stored in the Index file at the root of this repo
++ metadata for all modules is stored in the [Index](Index.ods) file at the root of this repo
 + modules should not be committed to this repo without the following metadata:
  + Title
  + Units
@@ -51,6 +51,7 @@ Please read the following guidelines carefully. Legacy material that does not fo
  + is factually correct
  + fulfills the stated teaching objectives
  + applies to all versions the author has listed
++ this spreadsheet reconciles [topics](https://docs.google.com/spreadsheets/d/1JPl4U142BqGoFeUFXJ0d74-VXZMUCo-Ot6o9mwtrwGM/edit#gid=0) with available material
 
 ### Versions & Naming
 
