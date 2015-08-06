@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hands-on with Riak</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+      @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+name: center
+layout: true
+class: center, middle
+
+---
+
+name: standard
+layout: true
+class: left, top
+
+---
+
+template: center
+
+# Riak Backends
+
+---
+
+# Storage Backends
+
+* Bitcask
+* LevelDB
+* Memory
+* Multi-backend
+
+---
+
+# Backend config (1.4)
+
+```
+ %% Riak KV config
+  {riak_kv, [
+             %% Storage_backend specifies the Erlang 
+             %% module defining the storage mechanism
+             %% that will be used on this node.
+             {storage_backend, riak_kv_bitcask_backend},
+```
+
+---
+
+# Backend config (2.x)
+
+```
+storage_backend = leveldb
+```
+
+---
+
+# Bitcask
+
+## Highlights
+* Developed by Basho Technologies
+* A fast, append-only key-value store
+* In memory key lookup table (key_dir)
+* Closed files are immutable
+* Merging cleans up old data
+* Suitable for bounded data
+* http://downloads.basho.com/papers/bitcask-intro.pdf
+
+---
+
+# Bitcask
+
+## Strengths
+* Low, predictable latency
+* Configurable merging behaviour
+* Object expiration (TTL)
+
+## Weaknesses
+* All keys must fit in memory
+
+---
+
+# Bitcask 
+
+## Tips
+* Bitcask depends on filesystem caching
+* Be aware of file handle limits
+* Consider vnode count and max_file_size
+* Purge stale entries with expiry
+* Merge off-peak
+
+---
+
+# LevelDB
+
+## Highlights
+* Developed by Google
+* Append-only
+* Multiple levels of SSTable-like data structures
+* Allows for more advanced querying (2i)
+* Open Source (BSD License)
+* Suitable for unbounded data or advanced querying
+* eLevelDB is an Erlang application that encapsulates LevelDB
+
+---
+
+# LevelDB
+
+## Strengths
+* Supports secondary indexes
+* Snappy compression
+* Not bounded by memory
+
+## Weaknesses
+* Latency increases with data volume
+
+???
+
+* LevelDB uses Google Snappy data compression by default. This means more CPU usage but less disk space. The compression efficiency is especially good for text data: raw text, Base64, JSON, etc. 
+ 
+---
+
+# LevelDB 
+
+##Tips
+* Calculate suitable settings based on system specs
+* Review Riak release notes when upgrading
+* Memory management is being simplified in 2.0
+
+---
+
+# Memory
+
+## Highlights
+* Data is never persisted to disk
+* Typically used for test databases e.g. unit tests
+* Configurable memory footprint per node
+* Configurable object expiry
+
+---
+
+# Memory
+
+## Strengths
+* Fast
+* Useful for highly transient data
+
+## Weaknesses
+* Data durability
+
+---
+
+# Memory 
+
+## Tips
+* Calculate memory requirements taking in to consideration node failure and other system requirements on memory
+
+---
+
+# Multi-backend
+
+* Configure multiple backends for different types of data
+* Configure the default storage engine
+* Choose storage engine on per bucket basis
+* No reason not to use it
+
+---
+
+# Multi-backend config (1.4)
+
+```
+{storage_backend, riak_kv_multi_backend},
+{multi_backend_default, <<"bitcask_be">>},
+{multi_backend, [
+                 {<<"bitcask_be">>, riak_kv_bitcask_backend, [
+                     {data_root, "/var/lib/riak/bitcask"}
+                 ]},
+                 {<<"leveldb_be">>, riak_kv_eleveldb_backend, [
+                     {data_root, "/var/lib/riak/leveldb"}
+                 ]},
+                 {<<"memory_be">>, riak_kv_memory_backend, [
+                     {max_memory, 512}, %% in megabytes
+                 ]}
+]},
+```
+
+---
+
+# Multi-backend config (2.x)
+
+```
+storage_backend = multi
+
+multi_backend.bitcask_mult.storage_backend = bitcask
+multi_backend.bitcask_mult.bitcask.data_root = /var/lib/riak/bitcask_mult
+
+multi_backend.leveldb_mult.storage_backend = leveldb
+multi_backend.leveldb_mult.leveldb.data_root = /var/lib/riak/leveldb_mult
+
+multi_backend.default = bitcask_mult
+
+```
+
+---
+
+# General Storage Tips
+
+* Increase number of file handles (ulimit)
+* Avoid updating file metadata (noatime)
+* Tune data mount for partition format
+* Tune device scheduler for disk type
+
+
+    </textarea>
+    <script src="http://gnab.github.io/remark/downloads/remark-0.5.9.min.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
