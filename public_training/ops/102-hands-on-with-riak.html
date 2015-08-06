@@ -14,6 +14,16 @@
         font-weight: normal;
       }
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .footer {
+          position: absolute;
+          bottom: 12px;
+          left: 20px;
+          opacity: 0.5;
+      }
+      .fit img {
+          max-height: 100%;
+          max-width: 100%;
+      }
     </style>
   </head>
   <body>
@@ -22,12 +32,14 @@
 name: center
 layout: true
 class: center, middle
+.footer[&copy; Basho Technologies 2015]
 
 ---
 
 name: standard
 layout: true
 class: left, top
+.footer[&copy; Basho Technologies 2015]
 
 ---
 
@@ -83,14 +95,14 @@ source out.txt
 ## configuration
 
 ```
-/etc/riak
+/etc/riak/
     -|riak.conf
     -|advanced.config
 ```
 
 ```
-/var/lib/riak
-    -|generated.configs
+/var/lib/riak/
+    -|generated.configs/
 ```
 
 ---
@@ -99,7 +111,7 @@ source out.txt
 ## configuration
 
 ```
-/etc/riak
+/etc/riak/
     -|app.config
     -|vm.args
 ```
@@ -144,11 +156,11 @@ echo "erlang.distribution.net_ticktime=15" >> ./dev1/etc/riak.conf
 ## libraries
 
 ```
-/usr/lib/riak
-    -|erts-x.y.z
-    -|lib
-    -|basho-patches
-    -|releases
+/usr/lib/riak/
+    -|erts-x.y.z/
+    -|lib/
+    -|basho-patches/
+    -|releases/
 ```
 
 ???
@@ -164,15 +176,15 @@ echo "erlang.distribution.net_ticktime=15" >> ./dev1/etc/riak.conf
 ## data
 
 ```
-/var/lib/riak
-      -|bitcask
-      -|leveldb
-      -|ring
-      -|anti_entropy
-      -|yz
-      -|yz_anti_entropy
-      -|cluster_metadata
-      -|generated.configs
+/var/lib/riak/
+    -|bitcask/
+    -|leveldb/
+    -|ring/
+    -|anti_entropy/
+    -|yz/
+    -|yz_anti_entropy/
+    -|cluster_metadata/
+    -|generated.configs/
 ```
 
 ???
@@ -194,11 +206,11 @@ echo "erlang.distribution.net_ticktime=15" >> ./dev1/etc/riak.conf
 
 ```
 /var/log/riak/
-     -|console.log
-     -|crash.log
-     -|erlang.log
-     -|error.log
-     -|run_erl.log
+    -|console.log
+    -|crash.log
+    -|erlang.log
+    -|error.log
+    -|run_erl.log
 ```
 
 ???
@@ -213,11 +225,11 @@ echo "erlang.distribution.net_ticktime=15" >> ./dev1/etc/riak.conf
 ## Executables
 
 ```
-/usr/sbin
-  -|riak
-  -|riak-admin
-  -|riak-repl
-  -|riak-debug
+/usr/sbin/
+    -|riak
+    -|riak-admin
+    -|riak-repl
+    -|riak-debug
 ```
 
 ---
@@ -252,8 +264,7 @@ UDP       4000          SNMP listener
 
 
 ```
-/usr/sbin/riak
-
+[root@localhost ~]# riak
 Usage: riak «command»
 where «command» is one of the following:
     { help | start | stop | restart | ping | console | attach
@@ -320,9 +331,8 @@ template: center
 
 ???
 
-* Checks that the riak node is running. Prints "pong" when
-* successful.  When the node is stopped or not responding, prints:
-* "Node 'riak@192.168.84.134' not responding to pings."
+* Checks that the riak node is running. Prints "pong" when successful.  
+* When the node is stopped or not responding, prints: "Node 'riak@192.168.84.134' not responding to pings."
 
 ---
 
@@ -332,15 +342,10 @@ template: center
 
 ???
 
-* Prints performance information about the Erlang Virtual Machine similar
-* to the information provided by the `top` command.
-* -interval N
-* specifies an interval upon which the statistics are collected.
-* -sort { reductions | memory | msg_q }
-* Sorts the output of the command by Reduction Count, Memory
-* Utilization, or Message Queue size
-* -lines N
-* Controls the number of processes displayed in the output
+* Prints performance information about the Erlang Virtual Machine similar to the information provided by the `top` command.
+* `-interval N` specifies an interval upon which the statistics are collected.
+* `-sort { reductions | memory | msg_q }` sorts the output of the command by Reduction Count, Memory Utilization, or Message Queue size
+* `-lines N` controls the number of processes displayed in the output
 
 ---
 
@@ -363,10 +368,9 @@ template: center
 
 ???
 
-* Attaches to the console of a riak node running in the background
-* using a directly connected FIFO, giving access to the Erlang shell
-* and runtime messages. Prints "Node is not running!" when the node
-* cannot be reached. Exit `riak attach-direct` by pressing Ctrl-D.
+* Attaches to the console of a riak node running in the background using a directly connected FIFO, giving access to the Erlang shell and runtime messages.
+* Prints "Node is not running!" when the node cannot be reached. 
+* Exit `riak attach-direct` by pressing Ctrl-D.
 
 ---
 
@@ -376,11 +380,8 @@ template: center
 
 ???
 
-* Confirms whether the riak.conf and advanced.config is
-* valid.
-*
-* For applications configured with cuttlefish, this includes a call
-* to `config generate` also.
+* Confirms whether the riak.conf and advanced.config is valid.
+* For applications configured with cuttlefish, this includes a call to `config generate` also.
 
 ---
 
@@ -411,9 +412,7 @@ template: center
 
 ???
 
-*     prints out the effective configuration in cuttlefish syntax
-*     including defaults not specified in the .conf file. This is
-*     for 'start-time' configuration only.
+* prints out the effective configuration in cuttlefish syntax including defaults not specified in the .conf file. This is for 'start-time' configuration only.
 
 ---
 
@@ -423,9 +422,7 @@ template: center
 
 ???
 
-*     for a given setting, prints any documentation and other useful
-*     information, such as affected location in app.config, datatype
-*     of the value, default value, and effective value.
+* for a given setting, prints any documentation and other useful information, such as affected location in app.config, datatype of the value, default value, and effective value.
 
 ---
 

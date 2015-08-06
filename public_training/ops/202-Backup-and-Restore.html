@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Backup and Restore</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+      @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .footer {
+          position: absolute;
+          bottom: 12px;
+          left: 20px;
+          opacity: 0.5;
+      }
+      .fit img {
+          max-height: 100%;
+          max-width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+name: center
+layout: true
+class: center, middle
+.footer[&copy; Basho Technologies 2015]
+
+---
+
+name: standard
+layout: true
+class: left, top
+.footer[&copy; Basho Technologies 2015]
+
+---
+
+template: center
+
+# Backup and Restore
+
+---
+
+# Backup Methods
+
+* Node Backups
+* MDC Cluster Backup
+* Data Migrator
+
+---
+
+# Node Backups
+
+* rsync
+* snapshots
+* dir copy for Bitcask and eLevelDB
+* GETs for memory backend
+* Multi - specific approach per backend
+
+---
+
+# Node Backups
+
+## Data and state directories
+
+```
+/var/lib/riak/
+    -|bitcask/ 
+    -|leveldb/ 
+    -|merge_index/ 
+    -|ring/ 
+    -|anti_entropy/
+```
+
+???
+
+* Bitcask and eLevelDB - Because of the log structured file format, you just copy the ring and data directories 
+
+---
+
+# Node Backups 
+
+## Node configuration (1.4)
+
+```
+/etc/riak/
+    -|app.config
+    -|vm.args
+```
+
+---
+
+# Node Backups
+
+## Node configuration (2.x)
+
+```
+/etc/riak/
+    -|riak.conf
+    -|advanced.config
+```
+
+---
+
+# Node Backups
+
+## Riak Patches
+
+```
+/usr/lib/riak/lib/basho-patches/
+```
+
+---
+
+# Restoring Node Backups
+
+1. Install Riak
+2. Restore Riak directories
+3. (rename ring dir)
+4. Join node to cluster
+5. Mark old node down 
+6. Replace old node with new node
+
+---
+
+# Restoring Node Backups
+
+1. `riak-admin cluster join riak@riak6.example.com`
+2. `riak-admin down riak@riak1.example.com`
+3. `riak-admin cluster force-replace riak@riak1.example.com riak@riak6.example.com`
+4. `riak-admin cluster plan`
+5. `riak-admin cluster commit`
+
+???
+
+* Join new node to any existing, cluster node 
+* Mark the old instance down 
+* Force-replace the original instance with the new one 
+* Display and review the cluster change plan 
+* Commit the changes to the cluster
+
+---
+
+# MDC Cluster Backup
+
+---
+
+# Data Migrator
+
+* [http://github.com/basho/riak-data-migrator](http://github.com/basho/riak-data-migrator)  
+* Java tool to export and import data
+* Easy to use: $ java -jar riak-data-migrator-0.2.6.jar [options]
+
+    </textarea>
+    <script src="http://gnab.github.io/remark/downloads/remark-0.5.9.min.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
