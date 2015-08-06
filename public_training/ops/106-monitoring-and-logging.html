@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>106 Monitoring and Logging</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+      @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .footer {
+          position: absolute;
+          bottom: 12px;
+          left: 20px;
+          opacity: 0.5;
+      }
+      .fit img {
+          max-height: 100%;
+          max-width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+layout: true
+class: center, middle
+---
+# Monitoring
+
+---
+If it moves, watch it.
+
+---
+layout: false
+## Riak Health
+
+* Check that the local node is life
+```bash
+riak ping
+```
+```
+pong
+```
+
+* Check that a remote node is life
+```bash
+curl -s http://node1.example.com:8098/ping
+```
+```
+OK
+```
+
+* Check that node accepts reads and writes
+```bash
+riak-admin test
+```
+```
+Successfully completed 1 read/write cycle to ‘riak@node1.example.com’
+```
+---
+## Riak Health
+
+```bash
+riak-admin ring_status
+```
+```
+=========================== Claimant =============================
+Claimant:  ‘riak@node1.example.com’
+Status:     up
+Ring Ready: true
+======================= Ownership Handoff ========================
+No pending changes.
+======================= Unreachable Nodes ========================
+All nodes are up and reachable
+```
+---
+## Riak Metrics
+
+```bash
+riak-admin status
+```
+```
+1-minute stats for ‘riak@node1.example.com’
+-------------------------------------------
+riak_kv_stat_ts : 1396505566
+vnode_gets : 87324
+vnode_gets_total : 12387621
+vnode_puts : 13572
+vnode_puts_total : 1625343
+vnode_index_refreshes : 1278
+vnode_index_refreshes_total : 18726
+vnode_index_reads : 9826421
+vnode_index_reads_total : 347214
+...
+```
+---
+## Riak Metrics
+
+```bash
+curl -s http://node1.example.com:8098/stats | python -mjson.tool
+```
+```javascript
+{
+	// subset of available stats
+    "nodename": "node1@example.com",
+    "ring_creation_size": 64,
+    "ring_members": [
+        "node1@example.com",
+        "node2@example.com",
+        "node3@example.com",
+        "node4@example.com",
+        "node5@example.com"
+    ],
+    "ring_num_partitions": 64,
+    "ring_ownership": "[{'node1@example.com',12},
+	                    {'node2@example.com',13},
+						{'node3@example.com',13},
+						{'node4@example.com',13},
+						{'node5@example.com',13}]",
+    "vnode_gets": 87324,
+    "vnode_gets_total": 12387621,
+    "vnode_puts": 13572,
+    "vnode_puts_total": 1625343
+}
+```
+
+???
+The HTTP `/stats` endpoint provides stats in json format, can be queried remotely
+
+---
+## Riak Metrics
+
+![:scale 100%](./106-monitoring-and-logging/riak-metrics-1.png)
+
+???
+Trend things over time
+
+---
+
+## Riak Metrics
+
+![:scale 100%](./106-monitoring-and-logging/riak-metrics-2.png)
+
+???
+Stack certain graphs to get a clearer picture
+
+---
+
+## System Metrics
+
+* CPU
+* Disk IO
+* Disk Space
+* File Descriptors
+* Memory
+* Network
+* Swap
+
+---
+
+## System Metrics
+
+![:scale 100%](./106-monitoring-and-logging/system-metrics.png)
+
+???
+Trends help you spot issues
+
+---
+
+## Thresholds
+
+* CPU: 75% x num_cores
+* Memory: 65% utilization
+* Swap: >0% used
+* File Descriptors: 75% of ulimit
+
+---
+
+## Alerting
+
+* console.log messages
+* Sibling explosion
+* Object size
+* GET and PUT latencies
+* Replication issues
+
+---
+
+## Tools
+
+* Your favourite/existing monitoring software
+* Zabbix templates
+* Nagios plugins
+
+---
+
+## Logging
+
+---
+
+## Logging Configuration (1.4)
+
+```erlang
+{lager, [
+    {handlers, [
+        {lager_file_backend, [
+            {"/var/log/riak/error.log", error, 10485760, "$D0", 5},
+            {"/var/log/riak/console.log", info, 10485760, "$D0", 5}
+        ]},
+        {lager_syslog_backend, ["riak", daemon, info]}
+	]},
+```
+
+---
+
+## Logging Configuration (1.4)
+
+```erlang
+{crash_log, "/var/log/riak/crash.log"},
+{crash_log_msg_size, 65536},
+{crash_log_size, 10485760},
+{crash_log_date, "$D0"},
+{crash_log_count, 5},
+```
+
+---
+
+## Logging Configuration (2.x)
+
+```
+log.crash = on
+log.crash.file = $(platform_log_dir)/crash.log
+log.crash.maximum_message_size = 64KB
+log.crash.rotation = $D0
+log.crash.rotation.keep = 5
+log.crash.size = 10MB
+erlang.crash_dump = ./log/erl_crash.dump
+log.console = both
+log.console.file = $(platform_log_dir)/console.log
+log.console.level = info
+log.error.file = $(platform_log_dir)/error.log
+log.error.messages_per_second = 100
+log.error.redirect = on
+log.syslog = off
+log.syslog.facility = daemon
+log.syslog.ident = riak
+log.syslog.level = info
+```
+
+---
+
+## Common Log Files
+
+* console.log
+* error.log
+* crash.log
+* /var/lib/riak/leveldb/*/LOG
+
+---
+
+## Common Error Messages
+
+Erlang
+
+* `long_gc`
+* `busy_dist_port`
+* `emfile`
+* `{error, e____}`
+* Posix errors: http://erldocs.com/R15B/kernel/inet.html
+
+???
+* Long_gc - use less memory, or increase the memory settings in your app.config
+* Busy_dist_port - erlang buffers are full; increase zdbbl setting in vm.args
+* Too many db tables
+* Emfile - hit the ulimit
+
+---
+
+## Erlang Errors
+
+* `{error,duplicate_name}`
+* `{error,econnrefused} / {error,ehostunreach}`
+* `{error,eacces}`
+* `{error,enoent}`
+* `{error,erofs}`
+* `system_memory_high_watermark`
+
+???
+
+* `{error,duplicate_name}` - duplicate name already running / multiple nodes on same machine with same vm.args -name value / Riak is already running, check for beam.smp. / epmd thinks Riak is running, check/kill epmd
+* `{error,econnrefused}` / {error,ehostunreach}` - Ensure your cluster is up and nodes are able to communicate with each other (check connections and setcookie etc)
+* `{error,eacces}` - Ensure the riak beam process has permission to write to all *_dir values in app.config, for example, ring_state_dir, platform_data_dir, and others.
+* `{error,enoent}` - Missing an expected file or directory - check app.config *_dir
+* `{error,erofs}` - A file/directory is attempted to be written to a read-only filesystem
+* `system_memory_high_watermark` - Often a sign than an ETS table has grown too large - is vnode count reasonable ? (measured in dozens per node rather than hundreds).
+
+---
+
+## Monitoring Logs
+
+* Lager supports syslog
+* Log rotate and look for errors & warnings
+* Logstash?
+* Splunk?
+
+
+    </textarea>
+    <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js" type="text/javascript">
+    </script>
+	<script type="text/javascript">
+        remark.macros.scale = function (percentage) {
+          var url = this;
+          return '<img src="' + url + '" style="width: ' + percentage + '" />';
+          // Usage:
+          //   ![:scale 50%](image.jpg)
+          // Outputs:
+          //   <img src="image.jpg" style="width: 50%" />
+    };
+	</script>
+    <script type="text/javascript">
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
