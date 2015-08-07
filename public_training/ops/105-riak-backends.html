@@ -20,10 +20,6 @@
           left: 20px;
           opacity: 0.5;
       }
-      .fit img {
-          max-height: 100%;
-          max-width: 100%;
-      }
     </style>
   </head>
   <body>
@@ -238,6 +234,16 @@ multi_backend.default = bitcask_mult
     </textarea>
     <script src="lib/remark.js" type="text/javascript">
     </script>
+	<script type="text/javascript">
+        remark.macros.scale = function (percentage) {
+          var url = this;
+          return '<img src="' + url + '" style="width: ' + percentage + '" />';
+          // Usage:
+          //   ![:scale 50%](image.jpg)
+          // Outputs:
+          //   <img src="image.jpg" style="width: 50%" />
+        };
+	</script>
     <script type="text/javascript">
       var slideshow = remark.create();
     </script>
