@@ -31,7 +31,7 @@ Effective search has two sides to it. On the write-side, it's all about creating
 
 Let's look at a standard example. A contact record might be keyed by a unique ID. This is better than keying by name because people often share the same name.
 
-However, when we search for a contact, we don't know what the ID is! We only know the name. Unfortunately, in a simple key-value store, knowing the contact's name doesn't help retrieve the rest of the contact data, because there is no link between names and IDs. To find all contacts that have the specified name by brute force, it would be necessary to retrieve every single entry in the entire database, and check to see what the name was.
+However, when we search for a contact, we have a problem: we don't know what the ID is. We only know the name. Unfortunately, in a simple key-value store, knowing the contact's name doesn't help retrieve the rest of the contact data, because there is no link between names and IDs. To find all contacts that have the specified name by brute force, it would be necessary to retrieve every single entry in the entire database, and check to see what the name was.
 
 This is a prohibitively expensive operation. What is needed is an **index**, linking each name to a list of IDs of contacts who are so named. With such an index, it becomes computationally inexpensive to search by name.
 
