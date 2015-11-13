@@ -15,7 +15,7 @@ Students should understand:
 + why consistency matters, and why it must be sacrificed
 + that the next best thing is eventual consistency, and we can achieve that by resolving conflicts
 + how conflicts are discovered on read/write or by AAE
-+ some techniques Riak can use to resolve them, including timestamps, logical clocks, and CRDTs
++ some techniques Riak can use to resolve them, including timestamps, logical clocks, and passing siblings to the client.
 
 <br>
 
@@ -91,50 +91,10 @@ Here:
 
 The shorter causal context represents every event up to m. The longer represents every event up to m, and also event n. These two notations are sufficient to make causal context clear in even the most complex of distributed interactions. We'll look at an example from the paper.
 
-...
-Permits you to know truly what is an ancestor of what.
+The take away here is that Logical Clocks permit you to know what is an ancestor of what, and on that basis identify the cases where it is safe to overwrite old data with new without a fancy merge function.
 
 So, having a clear causal context permits Riak to do some intelligent resolution. However, if updates happen on two different machines without shared causal history, further resolution is still required.
 
-Riak now presents two options: either return siblings to the application for resolution at that level, or perform sibling resolution at the database level using provided knowledge of what type of data the current object represents.
-
-This is Riak's **Conflict-Free Replicated Data Type** (CRDT) functionality.
-
-CRDTs are distributed data structures designed to provide strong eventual consistency. If implemented properly, they make merge conflicts mathematically impossible, thus guaranteeing the database tends towards a consistent state over time.
-
-CRDTs work when the type alone is sufficient knowledge for conflict resolution to occur. For the mathematicians among you, that is to say that the merge function must be commutative, associative, and idempotent. This is why only certain types can be modelled in this way.
-
-+ commutative means the operands can be entered in any order and the result will be the same (e.g. minus doesn't work, plus does)
-+ associative means the operations can be run in any order and the result will not change (divide doesn't work, multiply does)
-+ idempotent... don't worry gentlemen, has nothing to do with potency... means the operation can be repeated multiple times without changing the result beyond the initial application
-
-Riak has the first implementation of CRDTs in a widely-used commercial database. It supports:
-
-+ counters
-+ sets
-+ maps
-+ flags
-+ registers
-
-Let's look at a brief example using sets.
-
-Consider modelling a public playlist as a set of track ids. Suppose two users concurrently alter the set, adding different tracks. In this case, the merge function is very simple: a set union operation gives us the correct result every time, which is to include both tracks.
-
-Now suppose a user removes a track while one replica is down. What happens now? A simple set union is clearly not sufficient for this situation... in fact, at first glance there appears to be no safe merge function. What we've created so far is called a "G-SET", or growth-only set.
-
-To get a set that can also shrink, you have to model your CRDT set as two underlying sets: one for additions, the other for removals. The set seen by users is additions *minus* removals, which in proper maths terminology is *the relative complement of removals in additions*.
-
-When merging, you need to check the previous and new state of both sets. If there is a track newly listed in the removals set, but not in the additions set, that means you can safely remove that track from both lists.
-
-Now suppose two users concurrently add and remove the same track. What should we do? Well, here your implementation has to make a choice. Riak elects to believe that more things are better than less things with respect to CRDT sets. So the merge function leaves the track in the additions set, and removes it from the removals set. The result is that the track remains in the list from the user's perspective.
-
-So, that is a CRDT set. Counters are implemented in a similar way, using two growth-only counters. Registers are simple strings, and use last write wins resolution. Flags prefer to be on rather than off.
-
-Maps are compound objects containing other CRDTs within them, even other maps. Resolution is per sub-field, with the addition or removal of the fields themselves treated as with sets.
-
-And that's CRDTs. The advantage of using them is that siblings need not be sent to the application, and application developers can be saved the hassle of writing complex application-specific conflict resolution code for simple types and common use-cases (like playlists for example).
-
-If you want to learn more about CRDTs, an excellent reading list by one of my colleagues can be found here:
-http://christophermeiklejohn.com/crdt/2014/07/22/readings-in-crdts.html
+Riak now presents two options: either return siblings to the application for resolution at that level, or perform sibling resolution at the database level using provided knowledge of what type of data the current object represents. This is something we’ll talk about in the next deck.
 
 <br>
