@@ -2,12 +2,10 @@
 *Teaching Notes*
 
 ---
-######OUTSTANDING ISSUES:
-
-+ needs review
+Written by Nicholas Bellerophon, December 2015.<br>
+Reviewed by Russell Brown, December 2015.<br>
 
 <br>
-
 ## Teaching Goals
 
 Students should understand:
@@ -43,17 +41,13 @@ Riak has the first implementation of CRDTs in a widely-used commercial database.
 
 Let's look at each of these in turn.
 
-### Flags
-
-We'll start with an easy one: flags. Flags are like booleans; their value can be either true or false (set or unset). They are very simple structures. You might use a flag to track whether a customer has completed a tutorial or not.
-
-The merge function for them is also extremely simple: it's a boolean AND operation. So truth wins over falsehood. Perhaps a better way of putting it is that data wins over lack of data, because the default value for flags is false. Therefore, it is slightly more likely that a true value represents an actual update than a false value does.
 
 ### Registers
 
-Next we'll look at registers. These are also quite simple. They are strings of characters. For example, you might use a register to store a customer's name.
+First we'll look at registers. These are quite simple structures. They are strings of characters. For example, you might use a register to store a customer's name.
 
 The merge function for registers is relatively basic, but does rely on some metadata. When a register value is written, a timestamp is written with it. Later, when two values are merged, the result is the value with the latest timestamp. This is called `Timestamp` or sometimes `Last Write Wins` resolution.
+
 
 ### Counters
 
@@ -100,7 +94,7 @@ However, Riak chooses not to use this solution, because it is difficult to keep 
 
 Therefore Riak uses a different solution for Sets, called ORSWOT. This stands for __Observe Remove Set WithOut Tombstones__. It allows the adding, and removal, of elements. Should an `add` and `remove` be concurrent, the `add` wins. To manage without tombstones, there is a version vector for the whole set. When an element is added to the set, the version vector is incremented and the `{actor(), count()}` pair for that increment is stored against the element as its _birth dot_. Every time the element is re-added to the set, its birth dot is updated to that of the `{actor(), count()}` version vector entry resulting from the add. When an element is removed, we simply drop it, no tombstones.
 
-When an element exists in replica A and not replica B, is it because A added it and B has not yet seen that, or that B removed it and A has not yet seen that? Usually the presence of a tombstone arbitrates. In this implementation we compare the birth dot of the present element to the clock in the Set it is absent from. If the element dot is not "seen" by the Set clock, that means the other set has yet to see this add, and the item is in the merged Set. If the Set clock dominates the dot, that means the other Set has removed this element already, and the item is not in the merged Set.
+When an element exists in replica A but not in replica B, is it because A added it and B has not yet seen that, or that B removed it and A has not yet seen that? Usually the presence of a tombstone arbitrates. In this implementation we compare the birth dot of the present element to the clock in the Set it is absent from. If the element dot is not "seen" by the Set clock, that means the other set has yet to see this add, and the item is in the merged Set. If the Set clock dominates the dot, that means the other Set has removed this element already, and the item is not in the merged Set.
 
 
 ### Maps
@@ -108,9 +102,18 @@ When an element exists in replica A and not replica B, is it because A added it 
 Maps are compound objects containing other CRDTs within them, even other maps. Resolution is per sub-field, with the addition or removal of the fields themselves treated as a special case of the rules for sets. In other words, each maps are implemented as sets of key-value pairs.
 
 
+### Flags
+
+We'll end with flags. Flags are like booleans in usage; their value can be either true or false (set or unset). You might use a flag to track whether a customer has completed a tutorial or not.
+
+A Riak flag is implemented as an ORSWOT containing exactly zero or one item. If the item is absent, the value of the flag is `false`. If the item is present, it is `true`. As with the Set implementation, this item has a version vector and birth dot permitting it to merge without tombstones. Also, as with Sets, in the concurrent case presence overrules absence (truth wins over falsehood).
+
+
 ### Summary
 
-And that's CRDTs. The advantage of using them is that siblings need not be sent to the application, and application developers can be saved the hassle of writing complex application-specific conflict resolution code for simple types and common use-cases (like playlists for example).
+And that's CRDTs. The advantage of using them is that siblings need not be sent to the application, and application developers can be saved the hassle of writing complex application-specific conflict resolution code for simple types and common use-cases (like playlists for example). A leading user of CRDTs in Riak published an excellent write-up in InfoQ discussing this point, and their use of CRDTs in general:
+
+http://www.infoq.com/articles/key-lessons-learned-from-transition-to-nosql
 
 If you want to learn more about CRDTs, an excellent reading list by a Basho expert can be found here:
 http://christophermeiklejohn.com/crdt/2014/07/22/readings-in-crdts.html
