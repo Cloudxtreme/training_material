@@ -28,6 +28,9 @@
   + an AP system
   + with near CP speed near the edge
 + remain coherent
+  + there are multiple ways to implement cache coherence, even locally for CPU
+  and RAM
+  + while writing applications, achieve more coherent code by using components
 + community-based development
   + based on Twemproxy
     + scalable
@@ -47,6 +50,27 @@
     + Riak-aware
       + sibling resolution
       + avoid sibling explosion
++ typical deployments
+  + local cache deployment
+    + advantage: moves Redis near the application
+    + disadvantage: Redis is memory-hungry
+    + disadvantage: cache writes on one application server do not lead to cache
+    writes on other application server, so ...
+      + "thundering herd" effect is not mitigated
+      + aggregate cache hit ratio is less than distributed deployments
+  + colocated cache deployment
+    + advantage: increases cache hit rate, compared to local cache deployment
+    + advantage: moves Cache Proxy and Redis near to Riak KV nodes
+    + disadvantage: Redis is memory-hungry
+    + disadvantage: fewer Redis nodes than Riak KV nodes are typically required
+    + disadvantage: data locality can be achieved initially, but is difficult
+    to maintain during faults, so cross-server communication is likely
+  + distributed cache deployment
+    + advantage: increases cache hit rate, compared to local cache deployment
+    + advantage: keeps Cache Proxy near the application
+    + advantage: moves memory-hungry Redis to distinct servers, friendly for
+    horizontal scaling
+    + disadvantage: Redis is farther from application servers
 + supports KV
   + String operations: GET, SET, DEL
     + Content-Type inference for Riak Search integration
