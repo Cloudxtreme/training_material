@@ -97,16 +97,18 @@ Therefore Riak uses a different solution for Sets, called ORSWOT. This stands fo
 When an element exists in replica A but not in replica B, is it because A added it and B has not yet seen that, or that B removed it and A has not yet seen that? Usually the presence of a tombstone arbitrates. In this implementation we compare the birth dot of the present element to the clock in the Set it is absent from. If the element dot is not "seen" by the Set clock, that means the other set has yet to see this add, and the item is in the merged Set. If the Set clock dominates the dot, that means the other Set has removed this element already, and the item is not in the merged Set.
 
 
-### Maps
-
-Maps are compound objects containing other CRDTs within them, even other maps. Resolution is per sub-field, with the addition or removal of the fields themselves treated as a special case of the rules for sets. In other words, each maps are implemented as sets of key-value pairs.
-
-
 ### Flags
 
-We'll end with flags. Flags are like booleans in usage; their value can be either true or false (set or unset). You might use a flag to track whether a customer has completed a tutorial or not.
+Flags are like booleans in usage; their value can be either true or false (set or unset). You might use a flag to track whether a customer has completed a tutorial or not.
 
 A Riak flag is implemented as an ORSWOT containing exactly zero or one item. If the item is absent, the value of the flag is `false`. If the item is present, it is `true`. As with the Set implementation, this item has a version vector and birth dot permitting it to merge without tombstones. Also, as with Sets, in the concurrent case presence overrules absence (truth wins over falsehood).
+
+
+### Maps
+
+We'll end with maps. Maps are compound objects containing other CRDTs within them, even other maps. Resolution is per sub-field, with the addition or removal of the fields themselves treated as a special case of the rules for sets. In other words, maps are implemented as sets of key-value pairs.
+
+
 
 
 ### Summary
