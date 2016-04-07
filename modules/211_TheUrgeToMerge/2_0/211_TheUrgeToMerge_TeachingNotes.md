@@ -27,7 +27,7 @@ CRDTs work when the type alone is sufficient knowledge for conflict resolution t
 
 + commutative means the operands can be entered in any order and the result will be the same (e.g. minus doesn't work, plus does)
 + associative means the operations can be run in any order and the result will not change (divide doesn't work, multiply does)
-+ idempotent... don't worry gentlemen, has nothing to do with potency... means the operation can be repeated multiple times without changing the result beyond the initial application
++ idempotent means the operation can be repeated multiple times without changing the result beyond the initial application
 
 ## Supported Types
 
