@@ -72,6 +72,7 @@
     horizontal scaling
     + disadvantage: Redis is farther from application servers
 + supports KV
+  + Riak KV 2.0.7 (2.1.3 preferred) and Riak TS 1.2+
   + String operations: GET, SET, DEL
     + Content-Type inference for Riak Search integration
 + upcoming support for DT
