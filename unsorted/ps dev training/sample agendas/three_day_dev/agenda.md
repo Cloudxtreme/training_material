@@ -103,6 +103,7 @@
 * Search
 * Term-based indexing
 * CRDTs
+* Timeseries & Quanta
 
 ### Access Patterns
 
