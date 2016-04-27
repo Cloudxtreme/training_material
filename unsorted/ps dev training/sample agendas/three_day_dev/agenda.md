@@ -130,7 +130,7 @@
 
 ====================================
 
-* Strong Consistency
+* Time-Series
 * Search (Solr/Yokozuna)
 * Datatypes
 * Security
@@ -139,11 +139,11 @@
 
 ====================================
 
-* Time-Series
 * Versioning and soft-deletes
 * Highly available Transactions
 * Session Storage
 * Shopping Cart / Product Data
+* Non Localized Time-Series
 
 ### Client Specific Use-Case
 
